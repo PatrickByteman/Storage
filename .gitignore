@@ -5,6 +5,7 @@
 .idea/misc.xml
 .idea/modules.xml
 db.sqlite3
+venv/
 migrations/
 .idea/vcs.xml
 main/__init__.py
@@ -335,3 +336,7 @@ venv/lib/python3.8/site-packages/werkzeug/
 venv/lib/python3.8/site-packages/yaml/
 venv/lib64
 venv/pyvenv.cfg
+venv/lib/python3.8/site-packages/django/conf/urls/
+venv/lib/python3.8/site-packages/django/contrib/contenttypes/apps.py
+venv/lib/python3.8/site-packages/django/contrib/sites/models.py
+venv/lib/python3.8/site-packages/jose/
