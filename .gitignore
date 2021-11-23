@@ -5,7 +5,7 @@
 .idea/misc.xml
 .idea/modules.xml
 db.sqlite3
-venv
+venv/
 migrations/
 .idea/vcs.xml
 main/__init__.py
