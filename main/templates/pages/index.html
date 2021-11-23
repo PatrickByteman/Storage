@@ -1,0 +1,19 @@
+{% extends 'base/base.html' %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row mt-3">
+        <div class="col">
+            <h1>Hello {{ request.user.username }}, your user_id is </h1>
+            <hr>
+            <p>Это маленький и очень простой сайт</p>
+            <hr>
+            <a href="events/">events</a>
+            <br>
+            <a href="userinfo/">user</a>
+            <hr>
+        </div>
+    </div>
+</div>
+{% endblock %}
