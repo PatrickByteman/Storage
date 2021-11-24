@@ -1,10 +1,4 @@
 # Created by .ignore support plugin (hsz.mobi)
-.idea/.gitignore
-.idea/Storage.iml
-.idea/inspectionProfiles/
-.idea/misc.xml
-.idea/modules.xml
 db.sqlite3
 venv/
 migrations/
-.idea/vcs.xml
