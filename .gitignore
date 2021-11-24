@@ -2,3 +2,10 @@
 db.sqlite3
 venv/
 migrations/
+/.idea/.gitignore
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/Storage.iml
+/.idea/vcs.xml
