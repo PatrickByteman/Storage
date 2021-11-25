@@ -1,7 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
 db.sqlite3
 venv/
-migrations/
+main/migrations/
 /.idea/.gitignore
 /.idea/misc.xml
 /.idea/modules.xml
