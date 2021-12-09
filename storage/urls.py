@@ -30,4 +30,5 @@ urlpatterns = [
     path('events/', views.get_events, name='events'),
     path('userinfo/', views.get_events, name='userinfo'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('oidc/', include('mozilla_django_oidc.urls')),
 ]

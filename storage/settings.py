@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'crispy_forms',
     'social_django',
+    'mozilla_django_oidc',
 ]
 
 MIDDLEWARE = [
@@ -141,6 +142,7 @@ SOCIAL_AUTH_URL_NAMESPACE = 'social'
 SOCIAL_AUTH_KEYCLOAK_KEY = 'lox'
 SOCIAL_AUTH_KEYCLOAK_SECRET = '2d8c1bab-b75a-447f-bf7b-72374bfc68c0'
 SOCIAL_AUTH_KEYCLOAK_PUBLIC_KEY = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAh7Bc+s/pbPF02ZOMc6VRVsqpwHoMgGNasNOzzen0pl8zISsZGMCWL/Irhq9X+mCSG2y1jMhFd14gEMZjU5CBN1Dblddz4MQF2MrbsIxOOJrtionPFrMHgiLXExWH9yWetc8rfbfEnzuNCj/mhykQvxq9II0Lz24L7/5Wb45YGNcjfMNiY7mv1r+8o+EKWwMkSGWvykKfNFOzIQqLC4+z++IMxnt+x4JeFSdOxT1sg2jNd+OumUGIF0/bLIca6uQthHBXGfkofTCiONq7YWg86Dzwr6dfWpKopc9QQh4ALvG1Y572Cja4Fi222nYJMf1DY2eNSWW63l2r00G6Fz1fywIDAQAB'
+#OIDC_RP_IDP_SIGN_KEY = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAh7Bc+s/pbPF02ZOMc6VRVsqpwHoMgGNasNOzzen0pl8zISsZGMCWL/Irhq9X+mCSG2y1jMhFd14gEMZjU5CBN1Dblddz4MQF2MrbsIxOOJrtionPFrMHgiLXExWH9yWetc8rfbfEnzuNCj/mhykQvxq9II0Lz24L7/5Wb45YGNcjfMNiY7mv1r+8o+EKWwMkSGWvykKfNFOzIQqLC4+z++IMxnt+x4JeFSdOxT1sg2jNd+OumUGIF0/bLIca6uQthHBXGfkofTCiONq7YWg86Dzwr6dfWpKopc9QQh4ALvG1Y572Cja4Fi222nYJMf1DY2eNSWW63l2r00G6Fz1fywIDAQAB'
 SOCIAL_AUTH_KEYCLOAK_AUTHORIZATION_URL = \
     'http://localhost:8080/auth/realms/demo/protocol/openid-connect/auth/'
 SOCIAL_AUTH_KEYCLOAK_ACCESS_TOKEN_URL = \
@@ -151,6 +153,7 @@ SOCIAL_AUTH_KEYCLOAK_ID_KEY = 'email'
 
 AUTHENTICATION_BACKENDS = [
     'social_core.backends.keycloak.KeycloakOAuth2',
+    'mozilla_django_oidc.auth.OIDCAuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -167,5 +170,23 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.load_extra_data',
 )
 
+
+OIDC_AUTH_URI = 'http://localhost:8080/auth/realms/demo'
+
+LOGIN_REDIRECT_URL = 'http://127.0.0.1:8000/'
+
+OIDC_RP_SIGN_ALGO = 'RS256'
+OIDC_RP_CLIENT_ID = 'lox'
+OIDC_RP_CLIENT_SECRET = "394bcd36-b576-42e2-80ae-d349eef941b9"
+OIDC_RP_SCOPES = 'openid email profile'
+OIDC_PERSISTENT_USER = False
+OIDC_CREATE_USER = True
+
+# Keycloak-specific (as per http://KEYCLOAK_SERVER/auth/realms/REALM/.well-known/openid-configuration)
+OIDC_OP_AUTHORIZATION_ENDPOINT = OIDC_AUTH_URI + '/protocol/openid-connect/auth'
+OIDC_OP_TOKEN_ENDPOINT = OIDC_AUTH_URI + '/protocol/openid-connect/token'
+OIDC_OP_USER_ENDPOINT = OIDC_AUTH_URI + '/protocol/openid-connect/userinfo'
+
+OIDC_OP_JWKS_ENDPOINT = 'http://localhost:8080/auth/realms/demo/protocol/openid-connect/certs'
 
 
