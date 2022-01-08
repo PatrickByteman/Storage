@@ -7,6 +7,10 @@ class Storage(models.Model):
     file = models.FileField(upload_to='uploads/%Y/%m/%d')
 
 
+class Settings(models.Model):
+    name = models.CharField(max_length=128)
+
+
 class SAT(models.Model):
     token = models.JSONField()
 

@@ -62,7 +62,7 @@
                             <div class="col">
                                 Roles:
                                 {% for role in user.roles %}
-                                    {{ role }},
+                                    <a href="{{ role }}"> {{ role }} </a>
                                 {% endfor %}
                             </div>
                         </div>
@@ -75,10 +75,9 @@
                         {% for event in events %}
                             {% for e in event %}
                                 <tr>
-                                    <th scope="row"></th>
                                     {% for res, value in e.items %}
                                         <tr>
-                                            <td>{{ res }}</td>
+                                            <th scope="row">{{ res }}</th>
                                             <td>{{ value }}</td>
                                         </tr>
                                     {% endfor %}

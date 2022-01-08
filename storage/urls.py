@@ -29,6 +29,9 @@ urlpatterns = [
     path('login/', views.auth, name="test"),
     path('events/', views.get_events, name='events'),
     path('userinfo/', views.get_events, name='userinfo'),
+    #path('authorize', views.oidc_login, name='authorize'),
+    #path('callback', views.callback, name='callback'),
+
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('oidc/', include('mozilla_django_oidc.urls')),
+    path('oidc/', include('keycloak_oidc.urls')),
 ]
