@@ -2,19 +2,24 @@ from django.shortcuts import render, redirect
 from main.forms import StorageSettings
 from main.models import Storage
 from django.views.generic import CreateView
+
+from requests_oauthlib import OAuth2Session
 import requests, datetime
+import os
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 
 def get_keycloak_sat():
     payload = {
         "client_id": "lox",
-        "client_secret": "2d8c1bab-b75a-447f-bf7b-72374bfc68c0",
+        "client_secret": "394bcd36-b576-42e2-80ae-d349eef941b9",
         "grant_type": "client_credentials",
         "Content-Type": "application/x-www-form-urlencoded",
     }
     http = "http://127.0.0.1:8080/auth/realms/demo/protocol/openid-connect/token"
     token = requests.post(http, data=payload)
     token = token.json()
+
     return token['access_token']
 
 
@@ -141,3 +146,28 @@ class CreateFile(CreateView):
     def form_valid(self, form):
         form.save()
         return redirect('index')
+
+
+def oidc_login(request):
+    client_id = 'lox'
+    redirect_uri = 'http://127.0.0.1:8000/callback'
+    scope = 'openid email profile'
+    oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
+    authorization_url, state = oauth.authorization_url(
+        'http://localhost:8080/auth/realms/demo/protocol/openid-connect/auth')
+    return redirect(authorization_url)
+
+
+def callback(request):
+    client_id = 'lox'
+    client_secret = '394bcd36-b576-42e2-80ae-d349eef941b9'
+    response = 'http://127.0.0.1:8000' + request.get_full_path()
+    redirect_uri = 'http://127.0.0.1:8000/callback'
+    scope = 'openid email profile'
+    oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
+    token = oauth.fetch_token(
+        'http://localhost:8080/auth/realms/demo/protocol/openid-connect/token',
+        authorization_response=response,
+        client_secret=client_secret)
+    print(token)
+    return redirect('/')
