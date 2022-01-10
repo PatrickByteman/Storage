@@ -21,7 +21,7 @@ from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
-    url('', include('social_django.urls', namespace='social')),
+    #url('', include('social_django.urls', namespace='social')),
     path('admin/', admin.site.urls),
     path('', views.index_page, name='index'),
     path('search/', views.get_events, name='search'),
@@ -33,5 +33,5 @@ urlpatterns = [
     #path('callback', views.callback, name='callback'),
 
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('oidc/', include('keycloak_oidc.urls')),
+    #path('oidc/', include('keycloak_oidc.urls')),
 ]

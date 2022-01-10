@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 from pathlib import Path
 import os
-from keycloak_oidc.default_settings import *
+#from keycloak_oidc.default_settings import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,9 +42,9 @@ INSTALLED_APPS = [
     'main',
     'bootstrap4',
     'crispy_forms',
-    'social_django',
+    #'social_django',
     #'mozilla_django_oidc',
-    'keycloak_oidc',
+    #'keycloak_oidc',
 ]
 
 MIDDLEWARE = [
@@ -56,7 +56,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'mozilla_django_oidc.middleware.SessionRefresh',
+    #'mozilla_django_oidc.middleware.SessionRefresh',
 ]
 
 
@@ -79,8 +79,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
 
-                'social_django.context_processors.backends',
-                'social_django.context_processors.login_redirect',
+                #'social_django.context_processors.backends',
+                #'social_django.context_processors.login_redirect',
             ],
         },
     },
