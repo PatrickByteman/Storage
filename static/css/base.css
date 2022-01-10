@@ -1,5 +1,6 @@
 html, body {
     min-height: 100%;
+    font-family: Arial;
     margin: 0;
 }
 
@@ -26,6 +27,10 @@ html, body {
     position: unset;
 }
 
+.navbar {
+    padding: 0.5rem 1rem;
+}
+
 .truncate-text {
     overflow: hidden;
     display: -webkit-box;
@@ -35,13 +40,6 @@ html, body {
     height: 3.9em;
 }
 
-.img-votings {
-    margin: auto;
-    width: 100%;
-    height: 200px;
-    background-position: center;
-    background-size: cover;
-}
 .img-avatar {
     width: 250px;
     height: 250px;
