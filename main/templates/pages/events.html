@@ -7,9 +7,12 @@
             <h1> Wellcome! </h1>
             <hr>
             <form action="{% url 'search' %}" method="POST">
+                <div class="container overflow-hidden">
                 {% csrf_token %}
                 <div class="row">
-                    <div class="col-1">
+                <div class="col">
+                <div class="row">
+                    <div class="col-3">
                         <div class="form-check">
                             <input class="form-check-input" type="radio" value="0" id="radio_username" name="for_name"
                                    {{ radio_username }}>
@@ -21,25 +24,32 @@
                             <label class="form-check-label" for="radio_userId">userId</label>
                         </div>
                     </div>
-                    <div class="col-5">
+                    <div class="col">
                         <input type="text" class="form-control" name="name" value={{ name }}>
                     </div>
                 </div>
                 <div class="row align-items-center">
-                    <div class="col-4">
+                    <div class="col">
                         <label class="form-label" for="date_from">Date from</label>
                         <input id="date_from" type="text" class="form-control" name="dateFrom" value={{ dateFrom }}
                                placeholder="yyyy-mm-dd">
                     </div>
-                    <div class="col-4">
+                    <div class="col">
                         <label class="form-label" for="date_to">Date To</label>
                         <input id="date_to" type="text" class="form-control" name="dateTo" value={{ dateTo }}
                                placeholder="yyyy-mm-dd">
                     </div>
+
+                </div>
                     <div class="col">
                         <input type="submit" name="submit" class="btn btn-primary" value="Search">
                     </div>
                 </div>
+                <div class="col">
+                    <div class="p-3 border bg-light">Custom column padding</div>
+                </div>
+                </div>
+            </div>
             <hr>
             {% if user_found %}
                 {% for user in users %}

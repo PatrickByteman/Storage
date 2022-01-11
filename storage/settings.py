@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'main',
-    'bootstrap4',
+    'bootstrap5',
     'crispy_forms',
     #'social_django',
     #'mozilla_django_oidc',
@@ -56,7 +56,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    #'mozilla_django_oidc.middleware.SessionRefresh',
+    'mozilla_django_oidc.middleware.SessionRefresh',
 ]
 
 
@@ -79,8 +79,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
 
-                #'social_django.context_processors.backends',
-                #'social_django.context_processors.login_redirect',
+                # 'social_django.context_processors.backends',
+                # 'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -141,7 +141,7 @@ STATICFILES_DIRS = [
     'static'
 ]
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 SOCIAL_AUTH_KEYCLOAK_KEY = 'lox'
@@ -196,5 +196,11 @@ OIDC_OP_USER_ENDPOINT = OIDC_AUTH_URI + '/protocol/openid-connect/userinfo'
 
 OIDC_OP_JWKS_ENDPOINT = 'http://localhost:8080/auth/realms/demo/protocol/openid-connect/certs'
 OIDC_OP_LOGOUT_ENDPOINT = OIDC_AUTH_URI + '/protocol/openid-connect/logout'
+
+# Boostrap settings
+BOOTSTRAP5 = {
+    "css_url": "/static/bootstrap-5.1.3-dist/css/bootstrap.min.css",
+    "javascript_url": "/static/bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"
+}
 
 

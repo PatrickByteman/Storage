@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from main.forms import StorageSettings
 from main.models import Storage
 from django.views.generic import CreateView
-#<a class="nav-link active" href="{% url "social:begin" "keycloak" %}">Войти</a> <a href="{% url 'oidc_authentication_init' %}">Login</a>
+#<a class="nav-link active" href="{% url "social:begin" "keycloak" %}">Войти</a>
 #from requests_oauthlib import OAuth2Session
 import requests, datetime
 import os
@@ -12,7 +12,7 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 def get_keycloak_sat():
     payload = {
         "client_id": "lox",
-        "client_secret": "394bcd36-b576-42e2-80ae-d349eef941b9",
+        "client_secret": "Z45wxafsrq59gpG3t3MbuvcczewzZuoH",
         "grant_type": "client_credentials",
         "Content-Type": "application/x-www-form-urlencoded",
     }
