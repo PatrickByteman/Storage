@@ -197,4 +197,10 @@ OIDC_OP_USER_ENDPOINT = OIDC_AUTH_URI + '/protocol/openid-connect/userinfo'
 OIDC_OP_JWKS_ENDPOINT = 'http://localhost:8080/auth/realms/demo/protocol/openid-connect/certs'
 OIDC_OP_LOGOUT_ENDPOINT = OIDC_AUTH_URI + '/protocol/openid-connect/logout'
 
+# Boostrap settings
+BOOTSTRAP5 = {
+    "css_url": "/static/bootstrap-5.1.3-dist/css/bootstrap.min.css",
+    "javascript_url": "/static/bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"
+}
+
 
