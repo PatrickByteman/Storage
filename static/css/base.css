@@ -31,6 +31,10 @@ html, body {
     padding: 0.5rem 1rem;
 }
 
+a {
+    text-decoration: none;
+}
+
 .truncate-text {
     overflow: hidden;
     display: -webkit-box;
