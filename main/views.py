@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from main.forms import StorageSettings
 from main.models import Storage
 from django.views.generic import CreateView
-#<a class="nav-link active" href="{% url "social:begin" "keycloak" %}">Войти</a>
-#from requests_oauthlib import OAuth2Session
+# <a class="nav-link active" href="{% url "social:begin" "keycloak" %}">Войти</a>
+# from requests_oauthlib import OAuth2Session
 import requests, datetime
 import os
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -112,10 +112,15 @@ def get_events(request):
     if request.method == "POST":
         token = get_keycloak_sat()
         form = request.POST
+        types = form.getlist('types-select')
+
         user = get_keycloak_user(token, form['for_name'], form['name'])
         print(form)
-        
-        if len(user) > 0:
+        print(types)
+        print(user)
+
+        #вынеси меня в отдельную функцию
+        if user:
             context['events'] = []
             for u in user:
                 context['events'].append(get_user_events(token, form['dateFrom'], form['dateTo'], u['id']))
@@ -131,9 +136,14 @@ def get_events(request):
             context['radio_userId'] = 'checked'
         context['dateFrom'] = form['dateFrom']
         context['dateTo'] = form['dateTo']
-        return render(request, 'pages/events.html', context)
 
-    return render(request, 'pages/events.html', context)
+        if types:
+            for a in types:
+                context[a] = 'selected'
+
+        return render(request, 'pages/events/events.html', context)
+
+    return render(request, 'pages/events/events.html', context)
 
 
 class CreateFile(CreateView):

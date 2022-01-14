@@ -46,33 +46,7 @@
                     </div>
                 </div>
                     <div class="col p-1" >
-                        {% load static %}
-                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                        <link rel="stylesheet" href="{% static 'chosen/chosen.min.css' %}" >
-                        <script src="{% static 'chosen/chosen.jquery.min.js' %}"></script>
-                        <select id="types-select" class="form-control" multiple tabindex="-1" style="width: 400px;">
-                            <option>opti1</option>
-                            <option>opti2</option>
-                            <option>opti3</option>
-                            <option>opti4</option>
-                            <option>opti5</option>
-                            <option>opti6</option>
-                            <option>opti7</option>
-                            <option>opti8</option>
-                            <option>opti9</option>
-                            <option>opti10</option>
-                            <option>opti11</option>
-                            <option>opti12</option>
-                            <option>opti13</option>
-                            <option>opti14</option>
-                            <option>opti15</option>
-                        </select>
-                        <script>
-                            $(document).ready(function() {
-                                $('#types-select').chosen();
-                            });
-                            $('.chosen-choices').addClass('form-control');
-                        </script>
+                        {% include 'pages/events/types.html' %}
                     </div>
                 </div>
             </div>
