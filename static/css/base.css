@@ -2,10 +2,36 @@ html, body {
     min-height: 100%;
     font-family: Arial;
     margin: 0;
+    position: relative;
+    z-index: auto;
 }
 
 .list-page {
     flex: 1;
+}
+.chosen-container {
+    display: inline-block;
+    font-size: 14px;
+    position: relative;
+    vertical-align: middle;
+}
+.chosen-choices {
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.chosen-drop {
+
 }
 
 #app {
@@ -24,7 +50,7 @@ html, body {
 }
 
 .footer {
-    position: unset;
+    position: relative;
 }
 
 .navbar {

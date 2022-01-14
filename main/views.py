@@ -12,7 +12,7 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 def get_keycloak_sat():
     payload = {
         "client_id": "lox",
-        "client_secret": "Z45wxafsrq59gpG3t3MbuvcczewzZuoH",
+        "client_secret": "R9r2Roj6htY4Rj8HneU2kduZ6Wz7hCXm",
         "grant_type": "client_credentials",
         "Content-Type": "application/x-www-form-urlencoded",
     }
