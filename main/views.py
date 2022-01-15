@@ -4,7 +4,7 @@ from main.models import Storage
 from django.views.generic import CreateView
 # <a class="nav-link active" href="{% url "social:begin" "keycloak" %}">Войти</a>
 # from requests_oauthlib import OAuth2Session
-import requests, datetime
+import requests, datetime, ast
 import os
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
@@ -26,6 +26,7 @@ def get_keycloak_sat():
 def get_keycloak_user(token, name_type, name):
     http = 'http://127.0.0.1:8080/auth/admin/realms/demo/users/'
     user = {}
+    # username = 0, userid = 1
     if name_type == '0':
         response = requests.request("GET", http, headers={'Authorization': "Bearer " + token, },
                                     params={'username': name})
@@ -113,15 +114,25 @@ def get_events(request):
         token = get_keycloak_sat()
         form = request.POST
         types = form.getlist('types-select')
+        selected_users = form.getlist('users')
 
-        user = get_keycloak_user(token, form['for_name'], form['name'])
+        if selected_users:
+            users = []
+            for user in selected_users:
+                users.append(ast.literal_eval(user))
+                print(user)
+        else:
+            users = get_keycloak_user(token, form['for_name'], form['name'])
 
-        #вынеси меня в отдельную функцию
-        if user:
+        print(form)
+        print(users)
+        print(types)
+
+        if users:
             context['events'] = []
-            for u in user:
-                context['events'].append(get_user_events(token, form['dateFrom'], form['dateTo'], u['id'], types))
-            context['users'] = user
+            for user in users:
+                context['events'].append(get_user_events(token, form['dateFrom'], form['dateTo'], user['id'], types))
+            context['users'] = users
             context['user_found'] = True
         else:
             context['user_found'] = False
