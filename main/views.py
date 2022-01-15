@@ -58,11 +58,11 @@ def get_keycloak_user(token, name_type, name):
     return user
 
 
-def get_user_events(token, date_from, date_to, user_id):
+def get_user_events(token, date_from, date_to, user_id, types):
     http = 'http://127.0.0.1:8080/auth/admin/realms/demo/events/'
     response = requests.request("GET", http, headers={'Authorization': "Bearer " + token, },
                                 params={'max': 1000, 'dateFrom': date_from, 'dateTo': date_to,
-                                        'user': user_id})
+                                        'user': user_id, 'type': types})
     response = response.json()
     result = []
     for res in response:
@@ -115,15 +115,12 @@ def get_events(request):
         types = form.getlist('types-select')
 
         user = get_keycloak_user(token, form['for_name'], form['name'])
-        print(form)
-        print(types)
-        print(user)
 
         #вынеси меня в отдельную функцию
         if user:
             context['events'] = []
             for u in user:
-                context['events'].append(get_user_events(token, form['dateFrom'], form['dateTo'], u['id']))
+                context['events'].append(get_user_events(token, form['dateFrom'], form['dateTo'], u['id'], types))
             context['users'] = user
             context['user_found'] = True
         else:
