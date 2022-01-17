@@ -1,0 +1,13 @@
+{% load static %}
+<script src="{% static 'jQuery/jquery-3.6.0.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'chosen/chosen.min.css' %}" >
+<script src="{% static 'chosen/chosen.jquery.min.js' %}"></script>
+<select name="types-filter" id="types-filter" class="form-control" multiple tabindex="-1">
+    <option name="CLIENT_DELETE" {{ CLIENT_DELETE }} >CLIENT_DELETE</option>
+</select>
+<script>
+    $(document).ready(function() {
+        $('#types-filter').chosen();
+    });
+    $('.chosen-choices').addClass('form-control');
+</script>

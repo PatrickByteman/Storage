@@ -10,43 +10,57 @@
                 <div class="container">
                 {% csrf_token %}
                 <div class="row">
-                <div class="col p-1">
-                <div class="row">
-                    <div class="col-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" value="0" id="radio_username" name="for_name"
-                                   {{ radio_username }}>
-                            <label class="form-check-label" for="radio_username">username</label>
+                    <div class="col p-1">
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" value="0" id="radio_username" name="for_name"
+                                           {{ radio_username }}>
+                                    <label class="form-check-label" for="radio_username">username</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" value="1" id="radio_userId" name="for_name"
+                                           {{ radio_userId }}>
+                                    <label class="form-check-label" for="radio_userId">userId</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control" name="name" value={{ name }}>
+                            </div>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" value="1" id="radio_userId" name="for_name"
-                                   {{ radio_userId }}>
-                            <label class="form-check-label" for="radio_userId">userId</label>
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <label class="form-label" for="date_from">Date from</label>
+                                <input id="date_from" type="text" class="form-control" name="dateFrom" value={{ dateFrom }}
+                                       placeholder="yyyy-mm-dd">
+                            </div>
+                            <div class="col">
+                                <label class="form-label" for="date_to">Date To</label>
+                                <input id="date_to" type="text" class="form-control" name="dateTo" value={{ dateTo }}
+                                       placeholder="yyyy-mm-dd">
+                            </div>
+                        </div>
+                        <div class="col pt-1" >
+                            {% include 'pages/events/types.html' %}
+                        </div>
+                        <div class="pt-1 d-grid gap-1">
+                            <input type="submit" name="submit" class="btn btn-primary" value="Search">
                         </div>
                     </div>
-                    <div class="col">
-                        <input type="text" class="form-control" name="name" value={{ name }}>
-                    </div>
-                </div>
-                <div class="row align-items-center">
-                    <div class="col">
-                        <label class="form-label" for="date_from">Date from</label>
-                        <input id="date_from" type="text" class="form-control" name="dateFrom" value={{ dateFrom }}
-                               placeholder="yyyy-mm-dd">
-                    </div>
-                    <div class="col">
-                        <label class="form-label" for="date_to">Date To</label>
-                        <input id="date_to" type="text" class="form-control" name="dateTo" value={{ dateTo }}
-                               placeholder="yyyy-mm-dd">
-                    </div>
-
-                </div>
-                    <div class="col">
-                        <input type="submit" name="submit" class="btn btn-primary" value="Search">
-                    </div>
-                </div>
                     <div class="col p-1" >
-                        {% include 'pages/events/types.html' %}
+                        <div class="col" >
+                            {% include 'pages/events/filter.html' %}
+                        </div>
+                        <div class="col pt-1">
+                            <label class="label" for="NewFilter">Create New Filter</label>
+                            <input id="NewFilter" type="text" class="form-control" name="NewFilter">
+                        </div>
+                        <div class="col pt-1">
+                            <button class="btn btn-primary" type="submit" name="submit" value="Types" >
+                                Save Types</button>
+                            <button class="btn btn-primary" type="submit" name="submit" value="Users" >
+                                Save Types and Users</button>
+                        </div>
                     </div>
                 </div>
             </div>

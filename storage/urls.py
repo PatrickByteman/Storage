@@ -25,7 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index_page, name='index'),
     path('search/', views.get_events, name='search'),
-    path('create/', views.CreateFile.as_view(), name='create'),
+    #path('create/', views.CreateFile.as_view(), name='create'),
     path('login/', views.auth, name="test"),
     path('events/', views.get_events, name='events'),
     path('userinfo/', views.get_events, name='userinfo'),

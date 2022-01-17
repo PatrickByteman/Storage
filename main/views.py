@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
-from main.forms import StorageSettings
-from main.models import Storage
+# from main.forms import StorageSettings
+# from main.models import Storage
 from django.views.generic import CreateView
 # <a class="nav-link active" href="{% url "social:begin" "keycloak" %}">Войти</a>
 # from requests_oauthlib import OAuth2Session
+from main.models import TypeFilter
 import requests, datetime, ast
 import os
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -12,7 +13,7 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 def get_keycloak_sat():
     payload = {
         "client_id": "lox",
-        "client_secret": "R9r2Roj6htY4Rj8HneU2kduZ6Wz7hCXm",
+        "client_secret": "UH4pxiuE1zwLzibWzF3ShBjI1ucUwcpC",
         "grant_type": "client_credentials",
         "Content-Type": "application/x-www-form-urlencoded",
     }
@@ -120,13 +121,20 @@ def get_events(request):
             users = []
             for user in selected_users:
                 users.append(ast.literal_eval(user))
-                print(user)
         else:
             users = get_keycloak_user(token, form['for_name'], form['name'])
 
         print(form)
         print(users)
         print(types)
+        print(type(users))
+        print(type(types))
+        if form['submit'] == 'Types' and form['NewFilter'] != 'Types' and types:
+            filter = TypeFilter()
+            filter.name = form['NewFilter']
+            filter.types = types
+            filter.save()
+            print(1)
 
         if users:
             context['events'] = []
@@ -154,16 +162,16 @@ def get_events(request):
     return render(request, 'pages/events/events.html', context)
 
 
-class CreateFile(CreateView):
-    template_name = 'pages/create.html'
-    model = Storage
-    model_form = StorageSettings
-    fields = ['name', 'description', 'file']
-    extra_context = {'pagename': 'Создание Файла'}
-
-    def form_valid(self, form):
-        form.save()
-        return redirect('index')
+# class CreateFile(CreateView):
+#     template_name = 'pages/create.html'
+#     model = Storage
+#     model_form = StorageSettings
+#     fields = ['name', 'description', 'file']
+#     extra_context = {'pagename': 'Создание Файла'}
+#
+#     def form_valid(self, form):
+#         form.save()
+#         return redirect('index')
 
 
 # def oidc_login(request):
