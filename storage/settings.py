@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 from pathlib import Path
 import os
-#from keycloak_oidc.default_settings import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,9 +41,6 @@ INSTALLED_APPS = [
     'main',
     'bootstrap5',
     'crispy_forms',
-    #'social_django',
-    #'mozilla_django_oidc',
-    #'keycloak_oidc',
 ]
 
 MIDDLEWARE = [
@@ -55,8 +51,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    'mozilla_django_oidc.middleware.SessionRefresh',
 ]
 
 
@@ -78,9 +72,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-
-                # 'social_django.context_processors.backends',
-                # 'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -143,64 +134,8 @@ STATICFILES_DIRS = [
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
-SOCIAL_AUTH_URL_NAMESPACE = 'social'
-SOCIAL_AUTH_KEYCLOAK_KEY = 'lox'
-SOCIAL_AUTH_KEYCLOAK_SECRET = '394bcd36-b576-42e2-80ae-d349eef941b9'
-SOCIAL_AUTH_KEYCLOAK_PUBLIC_KEY = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAh7Bc+s/pbPF02ZOMc6VRVsqpwHoMgGNasNOzzen0pl8zISsZGMCWL/Irhq9X+mCSG2y1jMhFd14gEMZjU5CBN1Dblddz4MQF2MrbsIxOOJrtionPFrMHgiLXExWH9yWetc8rfbfEnzuNCj/mhykQvxq9II0Lz24L7/5Wb45YGNcjfMNiY7mv1r+8o+EKWwMkSGWvykKfNFOzIQqLC4+z++IMxnt+x4JeFSdOxT1sg2jNd+OumUGIF0/bLIca6uQthHBXGfkofTCiONq7YWg86Dzwr6dfWpKopc9QQh4ALvG1Y572Cja4Fi222nYJMf1DY2eNSWW63l2r00G6Fz1fywIDAQAB'
-#OIDC_RP_IDP_SIGN_KEY = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAh7Bc+s/pbPF02ZOMc6VRVsqpwHoMgGNasNOzzen0pl8zISsZGMCWL/Irhq9X+mCSG2y1jMhFd14gEMZjU5CBN1Dblddz4MQF2MrbsIxOOJrtionPFrMHgiLXExWH9yWetc8rfbfEnzuNCj/mhykQvxq9II0Lz24L7/5Wb45YGNcjfMNiY7mv1r+8o+EKWwMkSGWvykKfNFOzIQqLC4+z++IMxnt+x4JeFSdOxT1sg2jNd+OumUGIF0/bLIca6uQthHBXGfkofTCiONq7YWg86Dzwr6dfWpKopc9QQh4ALvG1Y572Cja4Fi222nYJMf1DY2eNSWW63l2r00G6Fz1fywIDAQAB'
-SOCIAL_AUTH_KEYCLOAK_AUTHORIZATION_URL = \
-    'http://localhost:8080/auth/realms/demo/protocol/openid-connect/auth/'
-SOCIAL_AUTH_KEYCLOAK_ACCESS_TOKEN_URL = \
-    'http://localhost:8080/auth/realms/demo/protocol/openid-connect/token/'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://127.0.0.1:8000/'
-SOCIAL_AUTH_KEYCLOAK_ID_KEY = 'email'
-
-
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'social_core.backends.keycloak.KeycloakOAuth2',
-    'keycloak_oidc.auth.OIDCAuthenticationBackend',
-    #'mozilla_django_oidc.auth.OIDCAuthenticationBackend',
-]
-
-SOCIAL_AUTH_PIPELINE = (
-    'social_core.pipeline.social_auth.social_details',
-    'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.social_user',
-    'social_core.pipeline.user.get_username',
-    'social_core.pipeline.social_auth.associate_by_email',
-    'social_core.pipeline.user.create_user',
-    'social_core.pipeline.social_auth.associate_user',
-    'social_core.pipeline.social_auth.load_extra_data',
-    'social_core.pipeline.user.user_details',
-    'social_core.pipeline.social_auth.load_extra_data',
-)
-
-
-OIDC_AUTH_URI = 'http://localhost:8080/auth/realms/demo'
-
-LOGIN_REDIRECT_URL = 'http://127.0.0.1:8000/'
-
-OIDC_RP_CLIENT_ID = 'lox'
-OIDC_RP_CLIENT_SECRET = "394bcd36-b576-42e2-80ae-d349eef941b9"
-OIDC_RP_SIGN_ALGO = 'RS256'
-
-OIDC_RP_SCOPES = 'openid email profile'
-OIDC_PERSISTENT_USER = False
-OIDC_CREATE_USER = True
-
-# Keycloak-specific (as per http://KEYCLOAK_SERVER/auth/realms/REALM/.well-known/openid-configuration)
-OIDC_OP_AUTHORIZATION_ENDPOINT = OIDC_AUTH_URI + '/protocol/openid-connect/auth'
-OIDC_OP_TOKEN_ENDPOINT = OIDC_AUTH_URI + '/protocol/openid-connect/token'
-OIDC_OP_USER_ENDPOINT = OIDC_AUTH_URI + '/protocol/openid-connect/userinfo'
-
-OIDC_OP_JWKS_ENDPOINT = 'http://localhost:8080/auth/realms/demo/protocol/openid-connect/certs'
-OIDC_OP_LOGOUT_ENDPOINT = OIDC_AUTH_URI + '/protocol/openid-connect/logout'
-
 # Boostrap settings
 BOOTSTRAP5 = {
     "css_url": "/static/bootstrap-5.1.3-dist/css/bootstrap.min.css",
     "javascript_url": "/static/bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"
 }
-
-
