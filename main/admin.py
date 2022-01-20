@@ -1,5 +1,6 @@
 from django.contrib import admin
-#from main.models import Events
+#from django.contrib.auth.admin import UserAdmin
+from main.models import KeycloakUser
 # Register your models here.
 
-#admin.site.register(Events)
+admin.site.register(KeycloakUser)

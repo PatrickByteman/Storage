@@ -27,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -131,6 +130,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     'static'
 ]
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+AUTHENTICATION_BACKENDS = ['main.keycloak_authentication.KeycloakBackend']
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 

@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
+from django.conf.urls import include
 from django.contrib import admin
 from django.urls import path
 from main import views
@@ -29,8 +29,8 @@ urlpatterns = [
     path('login/', views.auth, name="test"),
     path('events/', views.get_events, name='events'),
     path('userinfo/', views.get_events, name='userinfo'),
-    #path('authorize', views.oidc_login, name='authorize'),
-    #path('callback', views.callback, name='callback'),
+    path('authorize/', views.oidc_login, name='authorize'),
+    path('callback/', views.callback, name='callback'),
 
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     #path('oidc/', include('keycloak_oidc.urls')),

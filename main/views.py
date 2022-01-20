@@ -1,24 +1,25 @@
 from django.shortcuts import render, redirect
-# from main.forms import StorageSettings
-# from main.models import Storage
-from django.views.generic import CreateView
-# <a class="nav-link active" href="{% url "social:begin" "keycloak" %}">Войти</a>
-# from requests_oauthlib import OAuth2Session
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
+from main.models import KeycloakUser
+from requests_oauthlib import OAuth2Session
 from main.models import TypeFilter
 import requests, datetime, ast
 import os
+from django.contrib.auth import authenticate, login
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 
 def get_keycloak_sat():
     payload = {
         "client_id": "lox",
-        "client_secret": "UH4pxiuE1zwLzibWzF3ShBjI1ucUwcpC",
+        "client_secret": "gBSc7w7Iaen3IU2CvBS50jkSQRUDdLIa",
         "grant_type": "client_credentials",
         "Content-Type": "application/x-www-form-urlencoded",
     }
     http = "http://127.0.0.1:8080/auth/realms/demo/protocol/openid-connect/token"
     token = requests.post(http, data=payload)
+    print(token)
     token = token.json()
 
     return token['access_token']
@@ -129,12 +130,12 @@ def get_events(request):
         print(types)
         print(type(users))
         print(type(types))
+
         if form['submit'] == 'Types' and form['NewFilter'] != 'Types' and types:
             filter = TypeFilter()
             filter.name = form['NewFilter']
             filter.types = types
             filter.save()
-            print(1)
 
         if users:
             context['events'] = []
@@ -162,38 +163,57 @@ def get_events(request):
     return render(request, 'pages/events/events.html', context)
 
 
-# class CreateFile(CreateView):
-#     template_name = 'pages/create.html'
-#     model = Storage
-#     model_form = StorageSettings
-#     fields = ['name', 'description', 'file']
-#     extra_context = {'pagename': 'Создание Файла'}
-#
-#     def form_valid(self, form):
-#         form.save()
-#         return redirect('index')
+# keycloak oidc login
+def oidc_login(request):
+    client_id = 'lox'
+    redirect_uri = 'http://127.0.0.1:8000/callback'
+    scope = 'openid email profile'
+    oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
+    authorization_url, state = oauth.authorization_url(
+        'http://127.0.0.1:8080/auth/realms/demo/protocol/openid-connect/auth')
+    return redirect(authorization_url)
 
 
-# def oidc_login(request):
-#     client_id = 'lox'
-#     redirect_uri = 'http://127.0.0.1:8000/callback'
-#     scope = 'openid email profile'
-#     oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
-#     authorization_url, state = oauth.authorization_url(
-#         'http://localhost:8080/auth/realms/demo/protocol/openid-connect/auth')
-#     return redirect(authorization_url)
-#
-#
-# def callback(request):
-#     client_id = 'lox'
-#     client_secret = '394bcd36-b576-42e2-80ae-d349eef941b9'
-#     response = 'http://127.0.0.1:8000' + request.get_full_path()
-#     redirect_uri = 'http://127.0.0.1:8000/callback'
-#     scope = 'openid email profile'
-#     oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
-#     token = oauth.fetch_token(
-#         'http://localhost:8080/auth/realms/demo/protocol/openid-connect/token',
-#         authorization_response=response,
-#         client_secret=client_secret)
-#     print(token)
-#     return redirect('/')
+def callback(request):
+    client_id = 'lox'
+    client_secret = 'gBSc7w7Iaen3IU2CvBS50jkSQRUDdLIa'
+    response = 'http://127.0.0.1:8000' + request.get_full_path()
+    redirect_uri = 'http://127.0.0.1:8000/callback'
+    scope = 'openid email profile'
+    oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
+    token = oauth.fetch_token(
+        'http://127.0.0.1:8080/auth/realms/demo/protocol/openid-connect/token',
+        authorization_response=response,
+        client_secret=client_secret)
+
+    payload = {
+        "client_id": "lox",
+        "client_secret": "gBSc7w7Iaen3IU2CvBS50jkSQRUDdLIa",
+        "token": token['access_token'],
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
+    http = "http://127.0.0.1:8080/auth/realms/demo/protocol/openid-connect/token/introspect/"
+    userinfo = requests.post(http, data=payload)
+    userinfo = userinfo.json()
+    print(userinfo)
+    print(userinfo['username'])
+    print(userinfo['sub'])
+    print(userinfo['realm_access']['roles'])
+
+    try:
+        keycloak_user = KeycloakUser.objects.get(keycloak_id=userinfo['sub'])
+    except ObjectDoesNotExist:
+        user = User.objects.create_user(username=userinfo['username'])
+        user.save()
+        keycloak_user = KeycloakUser()
+        keycloak_user.user = user
+        keycloak_user.keycloak_id = userinfo['sub']
+        keycloak_user.save()
+
+    request.content_params['token'] = token['access_token']
+    request.content_params['user_id'] = keycloak_user.user_id
+
+    user = authenticate(request)
+    login(request, user)
+    request.content_params.clear()
+    return redirect('/')
