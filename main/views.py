@@ -123,16 +123,13 @@ class EventsView(View):
 
     def get_extra_context(self, form):
         types = form.getlist('types-select')
-
         if types:
             for typ in types:
                 self.context[typ] = 'selected'
-
         if form['for_name'] == '0':
             self.context['radio_username'] = 'checked'
         elif form['for_name'] == '1':
             self.context['radio_userId'] = 'checked'
-
         self.context['dateFrom'] = form['dateFrom']
         self.context['dateTo'] = form['dateTo']
 
@@ -172,61 +169,6 @@ class EventsView(View):
         self.get_extra_context(form)
         print(self.context)
         return render(request, 'pages/events/events.html', self.context)
-
-
-# def get_events(request):
-#     context = {
-#         'pagename': 'Главная',
-#         'dateFrom': datetime.date.today().strftime("%Y-%m-%d"),
-#         'dateTo': (datetime.date.today() + datetime.timedelta(days=1)).strftime("%Y-%m-%d"),
-#         'radio_username': 'checked',
-#     }
-#
-#     if request.method == "POST":
-#         token = get_keycloak_sat()
-#         form = request.POST
-#         types = form.getlist('types-select')
-#         selected_users = form.getlist('users')
-#
-#         if selected_users:
-#             users = []
-#             for user in selected_users:
-#                 users.append(ast.literal_eval(user))
-#         else:
-#             users = get_keycloak_user(token, form['for_name'], form['name'])
-#         print(id(context))
-#
-#
-#         if form['submit'] == 'Types' and form['NewFilter'] != 'Types' and types:
-#             filter = TypeFilter()
-#             filter.name = form['NewFilter']
-#             filter.types = types
-#             filter.save()
-#
-#         if users:
-#             context['events'] = []
-#             for user in users:
-#                 context['events'].append(get_user_events(token, form['dateFrom'], form['dateTo'], user['id'], types))
-#             context['users'] = users
-#             context['user_found'] = True
-#         else:
-#             context['user_found'] = False
-#
-#         context['name'] = form['name']
-#         if form['for_name'] == '0':
-#             context['radio_username'] = 'checked'
-#         elif form['for_name'] == '1':
-#             context['radio_userId'] = 'checked'
-#         context['dateFrom'] = form['dateFrom']
-#         context['dateTo'] = form['dateTo']
-#
-#         if types:
-#             for a in types:
-#                 context[a] = 'selected'
-#
-#         return render(request, 'pages/events/events.html', context)
-#
-#     return render(request, 'pages/events/events.html', context)
 
 
 # keycloak oidc login
