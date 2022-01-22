@@ -33,33 +33,41 @@ class Keycloak:
         self.token = self.token['access_token']
         return self.token
 
-    def check_token(self, response, function, *args):
-        if response.status_code == 200:
-            return True
-        if response.status_code == 401:
-            self.get_token()
-            return function(*args)
-        return False
+    # this function has to be a decorator
+    # def check_token(self, response, function, *args):
+    #     if response.status_code == 200:
+    #         return True
+    #     if response.status_code == 401:
+    #         self.get_token()
+    #         function(*args)
+    #     return False
 
     def get_user_by_userid(self, userid):
         url = 'http://127.0.0.1:8080/auth/admin/realms/demo/users/'
         response = requests.request("GET", url + userid, headers={'Authorization': "Bearer " + self.token}, params={})
-        if self.check_token(response, self.get_user_by_userid, userid):
+        print(response)
+        if response.status_code == 200:
             response = response.json()
+            users = []
             user = {
                 'username': response['username'],
                 'id': response['id'],
                 'enabled': response['enabled'],
                 'roles': self.get_user_roles(response['id'])
             }
-            return user
+            users.append(user)
+            return users
+        elif response.status_code == 401:
+            self.get_token()
+            return self.get_user_by_userid(userid)
         return 'user not found'
 
     def get_users_by_username(self, username):
         url = 'http://127.0.0.1:8080/auth/admin/realms/demo/users/'
         response = requests.request("GET", url, headers={'Authorization': "Bearer " + self.token},
                                     params={'username': username})
-        if self.check_token(response, self.get_users_by_username, username):
+        print(response)
+        if response.status_code == 200:
             response = response.json()
             users = []
             for user in response:
@@ -70,8 +78,10 @@ class Keycloak:
                     'roles': self.get_user_roles(user['id'])
                 }
                 users.append(u)
-            print(users)
             return users
+        elif response.status_code == 401:
+            self.get_token()
+            return self.get_users_by_username(username)
         return 'user not found'
 
     def get_user_roles(self, userid):
@@ -91,7 +101,7 @@ class Keycloak:
 
     def get_user_events(self, date_from, date_to, user_id, search_types):
         http = 'http://127.0.0.1:8080/auth/admin/realms/demo/events/'
-        response = requests.request("GET", http, headers={'Authorization': "Bearer " + self.token, },
+        response = requests.request("GET", http, headers={'Authorization': "Bearer " + self.token},
                                     params={'max': 1000, 'dateFrom': date_from, 'dateTo': date_to,
                                             'user': user_id, 'type': search_types})
         response = response.json()
@@ -103,42 +113,6 @@ class Keycloak:
             del res['details']
             types.append(res)
         return types
-
-
-    def get_keycloak_user(self, name_type, name):
-        url = 'http://127.0.0.1:8080/auth/admin/realms/demo/users/'
-        user = {}
-        # username = 0, userid = 1
-        if name_type == '0':
-            response = requests.request("GET", url, headers={'Authorization': "Bearer " + self.token, },
-                                        params={'username': name})
-            response = response.json()
-            if len(response) > 0:
-                users = []
-                for user in response:
-                    u = {
-                        'username': user['username'],
-                        'id': user['id'],
-                        'enabled': user['enabled'],
-                        'roles': get_user_roles(self.token, user['id'])
-                    }
-                    users.append(u)
-                return users
-        elif name_type == '1':
-            response = requests.request("GET", url + name, headers={'Authorization': "Bearer " + self.token, },
-                                        params={})
-            response = response.json()
-            if len(response) > 1:
-                user = []
-                u = {
-                    'username': response['username'],
-                    'id': response['id'],
-                    'enabled': response['enabled'],
-                    'roles': get_user_roles(self.token, response['id'])
-                }
-                user.append(u)
-                return user
-        return user
 
 
 def get_keycloak_sat():
@@ -235,7 +209,7 @@ def auth(request):
 
 
 class EventsView(View):
-    token = Keycloak()
+    keycloak = Keycloak()
 
     def __init__(self, *args, **kwargs):
         self.context = {
@@ -259,23 +233,25 @@ class EventsView(View):
         self.context['dateTo'] = form['dateTo']
 
     def get_users(self, form):
-        token = get_keycloak_sat()
         selected_users = form.getlist('users')
         if selected_users:
             users = []
             for user in selected_users:
                 users.append(ast.literal_eval(user))
         else:
-            users = get_keycloak_user(token, form['for_name'], form['name'])
+            if form['for_name'] == '0':
+                users = self.keycloak.get_users_by_username(form['name'])
+            else:
+                users = self.keycloak.get_user_by_userid(form['name'])
         return users
 
     def get_events(self, form, users):
         types = form.getlist('types-select')
-        token = get_keycloak_sat()
         if users:
             self.context['events'] = []
             for user in users:
-                self.context['events'].append(get_user_events(token, form['dateFrom'], form['dateTo'], user['id'], types))
+                self.context['events'].append(
+                    self.keycloak.get_user_events(form['dateFrom'], form['dateTo'], user['id'], types))
             self.context['users'] = users
             self.context['user_found'] = True
         else:
@@ -283,16 +259,11 @@ class EventsView(View):
 
     @method_decorator(login_required)
     def get(self, request):
-        q = self.token.get_users_by_username('a')
-        print(q)
-        print(self.token.token)
-        print(id(self.token.token))
         return render(request, 'pages/events/events.html', self.context)
 
     @method_decorator(login_required)
     def post(self, request):
         form = request.POST
-        print(form)
         users = self.get_users(form)
         self.get_events(form, users)
         self.get_extra_context(form)
