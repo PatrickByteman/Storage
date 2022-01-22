@@ -14,8 +14,131 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 
 class Keycloak:
-    def __init__(self):
-        pass
+    token = ''
+
+    def get_token(self):
+        url = 'http://127.0.0.1:8080/auth/realms/demo/protocol/openid-connect/userinfo'
+        response = requests.request("GET", url, headers={'Authorization': "Bearer " + self.token})
+        if response.status_code == 200:
+            return self.token
+        payload = {
+            "client_id": "lox",
+            "client_secret": "gBSc7w7Iaen3IU2CvBS50jkSQRUDdLIa",
+            "grant_type": "client_credentials",
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+        url = "http://127.0.0.1:8080/auth/realms/demo/protocol/openid-connect/token"
+        self.token = requests.post(url, data=payload)
+        self.token = self.token.json()
+        self.token = self.token['access_token']
+        return self.token
+
+    def check_token(self, response, function, *args):
+        if response.status_code == 200:
+            return True
+        if response.status_code == 401:
+            self.get_token()
+            return function(*args)
+        return False
+
+    def get_user_by_userid(self, userid):
+        url = 'http://127.0.0.1:8080/auth/admin/realms/demo/users/'
+        response = requests.request("GET", url + userid, headers={'Authorization': "Bearer " + self.token}, params={})
+        if self.check_token(response, self.get_user_by_userid, userid):
+            response = response.json()
+            user = {
+                'username': response['username'],
+                'id': response['id'],
+                'enabled': response['enabled'],
+                'roles': self.get_user_roles(response['id'])
+            }
+            return user
+        return 'user not found'
+
+    def get_users_by_username(self, username):
+        url = 'http://127.0.0.1:8080/auth/admin/realms/demo/users/'
+        response = requests.request("GET", url, headers={'Authorization': "Bearer " + self.token},
+                                    params={'username': username})
+        if self.check_token(response, self.get_users_by_username, username):
+            response = response.json()
+            users = []
+            for user in response:
+                u = {
+                    'username': user['username'],
+                    'id': user['id'],
+                    'enabled': user['enabled'],
+                    'roles': self.get_user_roles(user['id'])
+                }
+                users.append(u)
+            print(users)
+            return users
+        return 'user not found'
+
+    def get_user_roles(self, userid):
+        url = 'http://127.0.0.1:8080/auth/admin/realms/demo/users/'
+        response = requests.request("GET", url + userid + '/role-mappings/',
+                                    headers={'Authorization': "Bearer " + self.token}, params={})
+        response = response.json()
+        roles = []
+        for result in response:
+            for res in response[result]:
+                if type(res) == dict:
+                    roles.append(res['name'])
+                else:
+                    for q in response[result][res]['mappings']:
+                        roles.append(q['name'])
+        return roles
+
+    def get_user_events(self, date_from, date_to, user_id, search_types):
+        http = 'http://127.0.0.1:8080/auth/admin/realms/demo/events/'
+        response = requests.request("GET", http, headers={'Authorization': "Bearer " + self.token, },
+                                    params={'max': 1000, 'dateFrom': date_from, 'dateTo': date_to,
+                                            'user': user_id, 'type': search_types})
+        response = response.json()
+        types = []
+        for res in response:
+            date = datetime.datetime.fromtimestamp(res['time'] / 1000.0) + datetime.timedelta(hours=3)
+            date = date.strftime('%Y-%m-%d %H:%M:%S')
+            res['time'] = date
+            del res['details']
+            types.append(res)
+        return types
+
+
+    def get_keycloak_user(self, name_type, name):
+        url = 'http://127.0.0.1:8080/auth/admin/realms/demo/users/'
+        user = {}
+        # username = 0, userid = 1
+        if name_type == '0':
+            response = requests.request("GET", url, headers={'Authorization': "Bearer " + self.token, },
+                                        params={'username': name})
+            response = response.json()
+            if len(response) > 0:
+                users = []
+                for user in response:
+                    u = {
+                        'username': user['username'],
+                        'id': user['id'],
+                        'enabled': user['enabled'],
+                        'roles': get_user_roles(self.token, user['id'])
+                    }
+                    users.append(u)
+                return users
+        elif name_type == '1':
+            response = requests.request("GET", url + name, headers={'Authorization': "Bearer " + self.token, },
+                                        params={})
+            response = response.json()
+            if len(response) > 1:
+                user = []
+                u = {
+                    'username': response['username'],
+                    'id': response['id'],
+                    'enabled': response['enabled'],
+                    'roles': get_user_roles(self.token, response['id'])
+                }
+                user.append(u)
+                return user
+        return user
 
 
 def get_keycloak_sat():
@@ -112,6 +235,8 @@ def auth(request):
 
 
 class EventsView(View):
+    token = Keycloak()
+
     def __init__(self, *args, **kwargs):
         self.context = {
             'pagename': 'Главная',
@@ -158,6 +283,10 @@ class EventsView(View):
 
     @method_decorator(login_required)
     def get(self, request):
+        q = self.token.get_users_by_username('a')
+        print(q)
+        print(self.token.token)
+        print(id(self.token.token))
         return render(request, 'pages/events/events.html', self.context)
 
     @method_decorator(login_required)
