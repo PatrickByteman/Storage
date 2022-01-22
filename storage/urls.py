@@ -21,18 +21,14 @@ from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
-    #url('', include('social_django.urls', namespace='social')),
     path('admin/', admin.site.urls),
     path('', views.index_page, name='index'),
-    #path('search/', views.get_events, name='search'),
     #path('create/', views.CreateFile.as_view(), name='create'),
     path('login/', views.auth, name="test"),
-    #path('events/', views.get_events, name='events'),
     path('events/', views.EventsView.as_view(), name='events'),
-    #path('userinfo/', views.get_events, name='userinfo'),
+
     path('authorize/', views.oidc_login, name='authorize'),
     path('callback/', views.callback, name='callback'),
 
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    #path('oidc/', include('keycloak_oidc.urls')),
 ]

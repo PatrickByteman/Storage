@@ -34,7 +34,6 @@ class Keycloak:
     def get_user_by_userid(self, userid):
         url = 'http://127.0.0.1:8080/auth/admin/realms/demo/users/'
         response = requests.request("GET", url + userid, headers={'Authorization': "Bearer " + self.token}, params={})
-        print(response)
         if response.status_code == 200:
             response = response.json()
             users = []
@@ -55,7 +54,6 @@ class Keycloak:
         url = 'http://127.0.0.1:8080/auth/admin/realms/demo/users/'
         response = requests.request("GET", url, headers={'Authorization': "Bearer " + self.token},
                                     params={'username': username})
-        print(response)
         if response.status_code == 200:
             response = response.json()
             users = []
