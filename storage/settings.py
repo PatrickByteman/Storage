@@ -132,7 +132,7 @@ STATICFILES_DIRS = [
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
-AUTHENTICATION_BACKENDS = ['main.keycloak_authentication.KeycloakBackend']
+AUTHENTICATION_BACKENDS = ['keycloak.keycloak_authentication.KeycloakBackend']
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
