@@ -12,7 +12,7 @@ class Keycloak:
             return self.token
         payload = {
             "client_id": "lox",
-            "client_secret": "gBSc7w7Iaen3IU2CvBS50jkSQRUDdLIa",
+            "client_secret": "0NsoDJf79bLuervBD6YobH7FKLBjCBBc",
             "grant_type": "client_credentials",
             "Content-Type": "application/x-www-form-urlencoded",
         }

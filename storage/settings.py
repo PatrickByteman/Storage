@@ -39,7 +39,6 @@ INSTALLED_APPS = [
 
     'main',
     'bootstrap5',
-    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -134,7 +133,6 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 AUTHENTICATION_BACKENDS = ['keycloak.keycloak_authentication.KeycloakBackend']
 
-CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 # Boostrap settings
 BOOTSTRAP5 = {

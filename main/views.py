@@ -4,8 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 from django.views import View
+from django.views.generic import CreateView
 from main.models import KeycloakUser
 from main.models import TypeFilter
+from main.forms import TypeSettings
 from keycloak.keycloak import Keycloak
 from requests_oauthlib import OAuth2Session
 import requests, datetime, ast
@@ -23,6 +25,21 @@ def index_page(request):
 
 def auth(request):
     return render(request, '')
+
+
+class CreateFilter(CreateView):
+    template_name = 'pages/events/create_filter.html'
+    model = TypeFilter
+    model_form = TypeSettings
+    fields = ['name']
+    extra_context = {
+        'pagename': 'New Filter',
+    }
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.save()
+        return redirect('events')
 
 
 class EventsView(View):
@@ -84,7 +101,6 @@ class EventsView(View):
         users = self.get_users(form)
         self.get_events(form, users)
         self.get_extra_context(form)
-        print(self.context)
         return render(request, 'pages/events/events.html', self.context)
 
 
@@ -101,7 +117,7 @@ def oidc_login(request):
 
 def callback(request):
     client_id = 'lox'
-    client_secret = 'gBSc7w7Iaen3IU2CvBS50jkSQRUDdLIa'
+    client_secret = '0NsoDJf79bLuervBD6YobH7FKLBjCBBc'
     response = 'http://127.0.0.1:8000' + request.get_full_path()
     redirect_uri = 'http://127.0.0.1:8000/callback'
     scope = 'openid email profile'
@@ -113,7 +129,7 @@ def callback(request):
 
     payload = {
         "client_id": "lox",
-        "client_secret": "gBSc7w7Iaen3IU2CvBS50jkSQRUDdLIa",
+        "client_secret": "0NsoDJf79bLuervBD6YobH7FKLBjCBBc",
         "token": token['access_token'],
         "Content-Type": "application/x-www-form-urlencoded",
     }
