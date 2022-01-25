@@ -1,5 +1,6 @@
 import requests
 import datetime
+from storage.settings import KEYCLOAK_CLIENT_SECRET
 
 
 class Keycloak:
@@ -12,7 +13,7 @@ class Keycloak:
             return self.token
         payload = {
             "client_id": "lox",
-            "client_secret": "xlPrvJ3xNoYx29eZo2gzgQYJSO3ZPQSI",
+            "client_secret": KEYCLOAK_CLIENT_SECRET,
             "grant_type": "client_credentials",
             "Content-Type": "application/x-www-form-urlencoded",
         }

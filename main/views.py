@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.views import View
 from main.models import KeycloakUser
 from main.models import TypeFilter
+from storage.settings import KEYCLOAK_CLIENT_SECRET
 from keycloak.keycloak import Keycloak
 from requests_oauthlib import OAuth2Session
 import requests, datetime, ast
@@ -117,7 +118,7 @@ def oidc_login(request):
 
 def callback(request):
     client_id = 'lox'
-    client_secret = 'xlPrvJ3xNoYx29eZo2gzgQYJSO3ZPQSI'
+    client_secret = KEYCLOAK_CLIENT_SECRET
     response = 'http://127.0.0.1:8000' + request.get_full_path()
     redirect_uri = 'http://127.0.0.1:8000/callback'
     scope = 'openid email profile'
@@ -128,18 +129,14 @@ def callback(request):
         client_secret=client_secret)
 
     payload = {
-        "client_id": "lox",
-        "client_secret": "xlPrvJ3xNoYx29eZo2gzgQYJSO3ZPQSI",
-        "token": token['access_token'],
-        "Content-Type": "application/x-www-form-urlencoded",
+        'client_id': 'lox',
+        'client_secret': KEYCLOAK_CLIENT_SECRET,
+        'token': token['access_token'],
+        'Content-Type': 'application/x-www-form-urlencoded',
     }
     http = "http://127.0.0.1:8080/auth/realms/demo/protocol/openid-connect/token/introspect/"
     userinfo = requests.post(http, data=payload)
     userinfo = userinfo.json()
-    print(userinfo)
-    print(userinfo['username'])
-    print(userinfo['sub'])
-    print(userinfo['realm_access']['roles'])
 
     try:
         keycloak_user = KeycloakUser.objects.get(keycloak_id=userinfo['sub'])
