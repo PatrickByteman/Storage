@@ -1,10 +1,29 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
-    <form class="" action="" method="post">
-        {% csrf_token %}
-        {{ form }}
-        <input class="btn btn-primary" type="submit" value="Create" />
-    </form>
-    <hr>
+<div class="container">
+    <div class="row mt-3">
+        <div class="col">
+            <form class="" action="" method="post">
+                <div class="container">
+                {% csrf_token %}
+                <div class="col">
+                    <div class="pt-1">
+                        <label class="form-label" for="name">Filter Name:</label>
+                        <input type="text" class="form-control" name="name" value={{ name }}>
+                    </div>
+                    <div class="pt-1" >
+                        <label class="form-label" for="types-select">Filter Types:</label>
+                        {% include 'pages/events/types.html' %}
+                    </div>
+                    <div class="pt-2 d-grid gap-1">
+                        <input class="btn btn-primary" type="submit" value="Create" />
+                    </div>
+                </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<hr>
 {% endblock %}

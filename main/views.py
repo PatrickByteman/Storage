@@ -4,10 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 from django.views import View
-from django.views.generic import CreateView
 from main.models import KeycloakUser
 from main.models import TypeFilter
-from main.forms import TypeSettings
 from keycloak.keycloak import Keycloak
 from requests_oauthlib import OAuth2Session
 import requests, datetime, ast
@@ -27,19 +25,21 @@ def auth(request):
     return render(request, '')
 
 
-class CreateFilter(CreateView):
-    template_name = 'pages/events/create_filter.html'
-    model = TypeFilter
-    model_form = TypeSettings
-    fields = ['name']
-    extra_context = {
-        'pagename': 'New Filter',
+class CreateFilter(View):
+    context = {
+        'pagename': 'New Filter'
     }
 
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        self.object.save()
-        return redirect('events')
+    def get(self, request):
+        return render(request, 'pages/events/create_filter.html', self.context)
+
+    def post(self, request):
+        form = request.POST
+        filter = TypeFilter()
+        filter.name = form['name']
+        filter.types = form['types-select']
+        filter.save()
+        return render(request, 'pages/events/create_filter.html', self.context)
 
 
 class EventsView(View):
@@ -117,7 +117,7 @@ def oidc_login(request):
 
 def callback(request):
     client_id = 'lox'
-    client_secret = '0NsoDJf79bLuervBD6YobH7FKLBjCBBc'
+    client_secret = 'xlPrvJ3xNoYx29eZo2gzgQYJSO3ZPQSI'
     response = 'http://127.0.0.1:8000' + request.get_full_path()
     redirect_uri = 'http://127.0.0.1:8000/callback'
     scope = 'openid email profile'
@@ -129,7 +129,7 @@ def callback(request):
 
     payload = {
         "client_id": "lox",
-        "client_secret": "0NsoDJf79bLuervBD6YobH7FKLBjCBBc",
+        "client_secret": "xlPrvJ3xNoYx29eZo2gzgQYJSO3ZPQSI",
         "token": token['access_token'],
         "Content-Type": "application/x-www-form-urlencoded",
     }
