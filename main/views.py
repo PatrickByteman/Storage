@@ -38,7 +38,7 @@ class CreateFilter(View):
         form = request.POST
         filter = TypeFilter()
         filter.name = form['name']
-        filter.types = form['types-select']
+        filter.types = form.getlist('types-select')
         filter.save()
         return render(request, 'pages/events/create_filter.html', self.context)
 
