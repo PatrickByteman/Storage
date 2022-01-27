@@ -45,19 +45,7 @@
                         </div>
                     </div>
                     <div class="col p-1" >
-                        <div class="col" >
-                            {% include 'pages/events/filter.html' %}
-                        </div>
-                        <div class="col pt-1">
-                            <label class="label" for="NewFilter">Create New Filter</label>
-                            <input id="NewFilter" type="text" class="form-control" name="NewFilter">
-                        </div>
-                        <div class="col pt-1">
-                            <button class="btn btn-primary" type="submit" name="submit" value="Types" >
-                                Save Types</button>
-                            <button class="btn btn-primary" type="submit" name="submit" value="Users" >
-                                Save Types and Users</button>
-                        </div>
+                        {% include 'pages/events/filter.html' %}
                     </div>
                 </div>
             </div>

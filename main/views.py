@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 from django.views import View
+from django.views.generic import ListView
 from main.models import KeycloakUser
 from main.models import TypeFilter
 from storage.settings import KEYCLOAK_CLIENT_SECRET
@@ -24,6 +25,15 @@ def index_page(request):
 
 def auth(request):
     return render(request, '')
+
+
+class ListFilter(ListView):
+    template_name = 'pages/events/filter.html'
+    model = TypeFilter
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        contex = super().get_context_data(**kwargs)
+        return contex
 
 
 class CreateFilter(View):
@@ -62,7 +72,7 @@ class EventsView(View):
                 self.context[typ] = 'selected'
         if form['for_name'] == '0':
             self.context['radio_username'] = 'checked'
-        elif form['for_name'] == '1':
+        else:
             self.context['radio_userId'] = 'checked'
         self.context['dateFrom'] = form['dateFrom']
         self.context['dateTo'] = form['dateTo']
@@ -82,6 +92,8 @@ class EventsView(View):
 
     def get_events(self, form, users):
         types = form.getlist('types-select')
+        if form.get('types-filter'):
+            types += ast.literal_eval(form['types-filter'])
         if users:
             self.context['events'] = []
             for user in users:
@@ -92,13 +104,27 @@ class EventsView(View):
         else:
             self.context['user_found'] = False
 
+    def get_filters(self):
+        filters = TypeFilter.objects.all()
+        filter_list = []
+        for filter in filters:
+            filter_list.append({
+                'id': filter.id,
+                'name': filter.name,
+                'types': filter.types
+            })
+        return filter_list
+
     @method_decorator(login_required)
     def get(self, request):
+        self.context['filters'] = self.get_filters()
         return render(request, 'pages/events/events.html', self.context)
 
     @method_decorator(login_required)
     def post(self, request):
         form = request.POST
+        self.context['filters'] = self.get_filters()
+        #print(type(ast.literal_eval(form['types-filter'])))
         users = self.get_users(form)
         self.get_events(form, users)
         self.get_extra_context(form)
