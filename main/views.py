@@ -27,8 +27,20 @@ def auth(request):
     return render(request, '')
 
 
+def get_filters():
+    filters = TypeFilter.objects.all()
+    filter_list = []
+    for filter in filters:
+        filter_list.append({
+            'id': filter.id,
+            'name': filter.name,
+            'types': filter.types
+        })
+    return filter_list
+
+
 class ListFilter(ListView):
-    template_name = 'pages/events/filter.html'
+    template_name = 'pages/filtersANDtypes/filter.html'
     model = TypeFilter
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -42,7 +54,7 @@ class CreateFilter(View):
     }
 
     def get(self, request):
-        return render(request, 'pages/events/create_filter.html', self.context)
+        return render(request, 'pages/filtersANDtypes/create_filter.html', self.context)
 
     def post(self, request):
         form = request.POST
@@ -50,7 +62,27 @@ class CreateFilter(View):
         filter.name = form['name']
         filter.types = form.getlist('types-select')
         filter.save()
-        return render(request, 'pages/events/create_filter.html', self.context)
+        return render(request, 'pages/filtersANDtypes/create_filter.html', self.context)
+
+
+class ManageFilter(View):
+    context = {
+        'pagename': 'New Filter'
+    }
+
+    def get(self, request):
+        self.context['filters'] = get_filters()
+        return render(request, 'pages/filtersANDtypes/manage_filter.html', self.context)
+
+    def post(self, request):
+        form = request.POST
+        types = form.getlist('types-select')
+        if form.get('types-filter'):
+            types += ast.literal_eval(form['types-filter'])
+
+        print(types)
+        print(form)
+        return redirect('events')
 
 
 class EventsView(View):
@@ -104,27 +136,16 @@ class EventsView(View):
         else:
             self.context['user_found'] = False
 
-    def get_filters(self):
-        filters = TypeFilter.objects.all()
-        filter_list = []
-        for filter in filters:
-            filter_list.append({
-                'id': filter.id,
-                'name': filter.name,
-                'types': filter.types
-            })
-        return filter_list
-
     @method_decorator(login_required)
     def get(self, request):
-        self.context['filters'] = self.get_filters()
+        self.context['filters'] = get_filters()
         return render(request, 'pages/events/events.html', self.context)
 
     @method_decorator(login_required)
     def post(self, request):
         form = request.POST
-        self.context['filters'] = self.get_filters()
-        #print(type(ast.literal_eval(form['types-filter'])))
+        print(form)
+        self.context['filters'] = get_filters()
         users = self.get_users(form)
         self.get_events(form, users)
         self.get_extra_context(form)

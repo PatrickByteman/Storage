@@ -8,7 +8,7 @@ class KeycloakUser(models.Model):
 
 
 class TypeFilter(models.Model):
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, unique=True)
     types = models.JSONField()
 
 # class Events(models.Model):

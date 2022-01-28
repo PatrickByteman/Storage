@@ -27,6 +27,7 @@ urlpatterns = [
     path('login/', views.auth, name="test"),
 
     path('create/', views.CreateFilter.as_view(), name='create'),
+    path('manage/', views.ManageFilter.as_view(), name='manage'),
     path('events/', views.EventsView.as_view(), name='events'),
 
     path('authorize/', views.oidc_login, name='authorize'),
