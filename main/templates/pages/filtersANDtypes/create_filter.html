@@ -6,11 +6,22 @@
         <div class="col">
             <form class="" action="" method="post">
                 <div class="container">
+                    {% if error %}
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>This filter name is already taken</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% elif success %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>You successfully created new filter</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endif %}
                 {% csrf_token %}
                 <div class="col">
                     <div class="pt-1">
                         <label class="form-label" for="name">Filter Name:</label>
-                        <input type="text" class="form-control" name="name" value={{ name }}>
+                        <input required type="text" class="form-control" name="name" value={{ name }}>
                     </div>
                     <div class="pt-1">
                         <label class="form-label" for="types-filter">Filter Types:</label>

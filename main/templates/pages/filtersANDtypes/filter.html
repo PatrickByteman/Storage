@@ -4,6 +4,7 @@
 <script src="{% static 'chosen/chosen.jquery.min.js' %}"></script>
 <div class="col" >
     <select name="types-filter" id="types-filter" class="form-select" tabindex="-1">
+        <option value="[]" selected>Select Filter</option>
     {% for filter in filters %}
         <option value="{{ filter.types }}" name={{ filter.name }} >{{ filter.name }}</option>
     {% endfor %}

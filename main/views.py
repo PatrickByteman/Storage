@@ -49,25 +49,33 @@ class ListFilter(ListView):
 
 
 class CreateFilter(View):
-    context = {
-        'pagename': 'New Filter'
-    }
+    def __init__(self, *args, **kwargs):
+        self.context = {
+            'pagename': 'New Filter',
+        }
+        super().__init__(*args, **kwargs)
 
     def get(self, request):
         return render(request, 'pages/filtersANDtypes/create_filter.html', self.context)
 
     def post(self, request):
         form = request.POST
-        filter = TypeFilter()
-        filter.name = form['name']
-        filter.types = form.getlist('types-select')
-        filter.save()
+        print(TypeFilter.objects.filter(name=form['name']))
+        if TypeFilter.objects.filter(name=form['name']):
+            self.context['error'] = True
+        else:
+            self.context['success'] = False
+            filter = TypeFilter()
+            filter.name = form['name']
+            filter.types = form.getlist('types-select')
+            filter.save()
         return render(request, 'pages/filtersANDtypes/create_filter.html', self.context)
 
 
 class ManageFilter(View):
     context = {
-        'pagename': 'New Filter'
+        'pagename': 'New Filter',
+        'filters': get_filters()
     }
 
     def get(self, request):
@@ -77,12 +85,14 @@ class ManageFilter(View):
     def post(self, request):
         form = request.POST
         types = form.getlist('types-select')
-        if form.get('types-filter'):
-            types += ast.literal_eval(form['types-filter'])
-
+        if form['rename'] or types:
+            if form.get('types-filter'):
+                types += ast.literal_eval(form['types-filter'])
+            filters = TypeFilter.objects
         print(types)
         print(form)
-        return redirect('events')
+        return render(request, 'pages/filtersANDtypes/manage_filter.html', self.context)
+        #return redirect('events')
 
 
 class EventsView(View):
