@@ -60,11 +60,10 @@ class CreateFilter(View):
 
     def post(self, request):
         form = request.POST
-        print(TypeFilter.objects.filter(name=form['name']))
         if TypeFilter.objects.filter(name=form['name']):
             self.context['error'] = True
         else:
-            self.context['success'] = False
+            self.context['success'] = True
             filter = TypeFilter()
             filter.name = form['name']
             filter.types = form.getlist('types-select')
@@ -75,7 +74,6 @@ class CreateFilter(View):
 class ManageFilter(View):
     context = {
         'pagename': 'New Filter',
-        'filters': get_filters()
     }
 
     def get(self, request):
@@ -85,12 +83,16 @@ class ManageFilter(View):
     def post(self, request):
         form = request.POST
         types = form.getlist('types-select')
-        if form['rename'] or types:
-            if form.get('types-filter'):
-                types += ast.literal_eval(form['types-filter'])
-            filters = TypeFilter.objects
-        print(types)
-        print(form)
+        if form['filter-name']:
+            filter = TypeFilter.objects.get(name=form['filter-name'])
+            if form['rename']:
+                filter.name = form['rename']
+            if types:
+                if form.get('types-filter'):
+                    types += ast.literal_eval(form['types-filter'])
+                filter.types = types
+            filter.save()
+        self.context['filters'] = get_filters()
         return render(request, 'pages/filtersANDtypes/manage_filter.html', self.context)
         #return redirect('events')
 
@@ -154,7 +156,6 @@ class EventsView(View):
     @method_decorator(login_required)
     def post(self, request):
         form = request.POST
-        print(form)
         self.context['filters'] = get_filters()
         users = self.get_users(form)
         self.get_events(form, users)
