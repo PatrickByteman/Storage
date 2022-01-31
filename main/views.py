@@ -4,13 +4,13 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 from django.views import View
-from django.views.generic import ListView
-from main.models import KeycloakUser
-from main.models import TypeFilter
+from main.models import KeycloakUser, TypeFilter
 from storage.settings import KEYCLOAK_CLIENT_SECRET
 from keycloak.keycloak import Keycloak
 from requests_oauthlib import OAuth2Session
-import requests, datetime, ast
+import requests
+import datetime
+import ast
 import os
 from django.contrib.auth import authenticate, login
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
