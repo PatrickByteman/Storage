@@ -90,11 +90,10 @@ class ManageFilter(View):
             if types:
                 if form.get('types-filter'):
                     types += ast.literal_eval(form['types-filter'])
-                filter.types = types
+                filter.types = list(set(types))
             filter.save()
         self.context['filters'] = get_filters()
         return render(request, 'pages/filtersANDtypes/manage_filter.html', self.context)
-        #return redirect('events')
 
 
 class EventsView(View):
