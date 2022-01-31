@@ -39,15 +39,6 @@ def get_filters():
     return filter_list
 
 
-class ListFilter(ListView):
-    template_name = 'pages/filtersANDtypes/filter.html'
-    model = TypeFilter
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        contex = super().get_context_data(**kwargs)
-        return contex
-
-
 class CreateFilter(View):
     def __init__(self, *args, **kwargs):
         self.context = {
