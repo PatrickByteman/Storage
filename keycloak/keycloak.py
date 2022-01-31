@@ -90,7 +90,7 @@ class Keycloak:
     def get_user_events(self, date_from, date_to, user_id, search_types):
         http = 'http://127.0.0.1:8080/auth/admin/realms/demo/events/'
         response = requests.request("GET", http, headers={'Authorization': "Bearer " + self.token},
-                                    params={'max': 1000, 'dateFrom': date_from, 'dateTo': date_to,
+                                    params={'max': 100000, 'dateFrom': date_from, 'dateTo': date_to,
                                             'user': user_id, 'type': search_types})
         response = response.json()
         types = []

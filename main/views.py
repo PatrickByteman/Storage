@@ -23,10 +23,6 @@ def index_page(request):
     return render(request, 'pages/index.html', context)
 
 
-def auth(request):
-    return render(request, '')
-
-
 def get_filters():
     filters = TypeFilter.objects.all()
     filter_list = []
