@@ -1,6 +1,6 @@
 import requests
 import datetime
-from storage.settings import KEYCLOAK_CLIENT_SECRET
+from storage.settings import KEYCLOAK_CLIENT_SECRET, KEYCLOAK_CLIENT_ID
 
 
 class Keycloak:
@@ -12,7 +12,7 @@ class Keycloak:
         if response.status_code == 200:
             return self.token
         payload = {
-            "client_id": "lox",
+            "client_id": KEYCLOAK_CLIENT_ID,
             "client_secret": KEYCLOAK_CLIENT_SECRET,
             "grant_type": "client_credentials",
             "Content-Type": "application/x-www-form-urlencoded",

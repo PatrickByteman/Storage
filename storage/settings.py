@@ -132,7 +132,8 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 AUTHENTICATION_BACKENDS = ['keycloak.keycloak_authentication.KeycloakBackend']
-KEYCLOAK_CLIENT_SECRET = 'lwk81VqOUdPjeSVgbIsDHRjUvS7IsMfw'
+KEYCLOAK_CLIENT_SECRET = '9bOEVeRB0JXdaIrhpltyLCMk272xXAbK'
+KEYCLOAK_CLIENT_ID = 'lox'
 
 # Boostrap settings
 BOOTSTRAP5 = {
