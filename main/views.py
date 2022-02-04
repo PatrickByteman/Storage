@@ -171,8 +171,9 @@ def callback(request):
 
     payload = {
         'client_id': KEYCLOAK_CLIENT_ID,
-        'client_secret': KEYCLOAK_CLIENT_ID,
+        'client_secret': KEYCLOAK_CLIENT_SECRET,
         'token': token['access_token'],
+        'refresh_token': token['refresh_token'],
         'Content-Type': 'application/x-www-form-urlencoded',
     }
     http = "http://127.0.0.1:8080/auth/realms/demo/protocol/openid-connect/token/introspect/"
@@ -195,4 +196,5 @@ def callback(request):
     user = authenticate(request)
     login(request, user)
     request.content_params.clear()
+    requests.post('http://localhost:8080/auth/realms/demo/protocol/openid-connect/logout', data=payload)
     return redirect('/')
