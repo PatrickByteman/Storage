@@ -7,7 +7,7 @@ class Keycloak:
     token = ''
 
     def get_token(self):
-        url = KEYCLOAK_URL + 'auth/realms/demo/protocol/openid-connect/userinfo'
+        url = KEYCLOAK_URL + 'realms/demo/protocol/openid-connect/userinfo'
         response = requests.request("GET", url, headers={'Authorization': "Bearer " + self.token})
         if response.status_code == 200:
             return self.token
@@ -17,7 +17,7 @@ class Keycloak:
             "grant_type": "client_credentials",
             "Content-Type": "application/x-www-form-urlencoded",
         }
-        url = KEYCLOAK_URL + 'auth/realms/demo/protocol/openid-connect/token'
+        url = KEYCLOAK_URL + 'realms/demo/protocol/openid-connect/token'
         response = requests.post(url, data=payload)
         response = response.json()
         self.token = response['access_token']
@@ -33,7 +33,7 @@ class Keycloak:
     #     return False
 
     def get_user_by_userid(self, userid):
-        url = KEYCLOAK_URL + 'auth/admin/realms/demo/users/'
+        url = KEYCLOAK_URL + 'admin/realms/demo/users/'
         response = requests.request("GET", url + userid, headers={'Authorization': "Bearer " + self.token}, params={})
         if response.status_code == 200:
             response = response.json()
@@ -52,7 +52,7 @@ class Keycloak:
         return 'user not found'
 
     def get_users_by_username(self, username):
-        url = KEYCLOAK_URL + 'auth/admin/realms/demo/users/'
+        url = KEYCLOAK_URL + 'admin/realms/demo/users/'
         response = requests.request("GET", url, headers={'Authorization': "Bearer " + self.token},
                                     params={'username': username})
         if response.status_code == 200:
@@ -73,7 +73,7 @@ class Keycloak:
         return 'user not found'
 
     def get_user_roles(self, userid):
-        url = KEYCLOAK_URL + 'auth/admin/realms/demo/users/'
+        url = KEYCLOAK_URL + 'admin/realms/demo/users/'
         response = requests.request("GET", url + userid + '/role-mappings/',
                                     headers={'Authorization': "Bearer " + self.token}, params={})
         response = response.json()
@@ -88,7 +88,7 @@ class Keycloak:
         return roles
 
     def get_user_events(self, date_from, date_to, user_id, search_types):
-        url = KEYCLOAK_URL + 'auth/admin/realms/demo/events/'
+        url = KEYCLOAK_URL + 'admin/realms/demo/events/'
         response = requests.request("GET", url, headers={'Authorization': "Bearer " + self.token},
                                     params={'max': 100000, 'dateFrom': date_from, 'dateTo': date_to,
                                             'user': user_id, 'type': search_types})

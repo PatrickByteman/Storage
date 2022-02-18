@@ -154,7 +154,7 @@ def oidc_login(request):
     redirect_uri = 'http://127.0.0.1:8000/callback'
     scope = 'openid email profile'
     oauth = OAuth2Session(KEYCLOAK_CLIENT_ID, redirect_uri=redirect_uri, scope=scope)
-    authorization_url, state = oauth.authorization_url(KEYCLOAK_URL+'auth/realms/demo/protocol/openid-connect/auth')
+    authorization_url, state = oauth.authorization_url(KEYCLOAK_URL+'realms/demo/protocol/openid-connect/auth')
     return redirect(authorization_url)
 
 
@@ -164,7 +164,7 @@ def callback(request):
     scope = 'openid email profile'
     oauth = OAuth2Session(KEYCLOAK_CLIENT_ID, redirect_uri=redirect_uri, scope=scope)
     token = oauth.fetch_token(
-        KEYCLOAK_URL+'auth/realms/demo/protocol/openid-connect/token',
+        KEYCLOAK_URL+'realms/demo/protocol/openid-connect/token',
         authorization_response=response,
         client_secret=KEYCLOAK_CLIENT_SECRET)
 
@@ -175,7 +175,7 @@ def callback(request):
         'refresh_token': token['refresh_token'],
         'Content-Type': 'application/x-www-form-urlencoded',
     }
-    http = KEYCLOAK_URL + 'auth/realms/demo/protocol/openid-connect/token/introspect/'
+    http = KEYCLOAK_URL + 'realms/demo/protocol/openid-connect/token/introspect/'
     userinfo = requests.post(http, data=payload)
     userinfo = userinfo.json()
 
@@ -195,5 +195,5 @@ def callback(request):
     user = authenticate(request)
     login(request, user)
     request.content_params.clear()
-    requests.post(KEYCLOAK_URL + 'auth/realms/demo/protocol/openid-connect/logout', data=payload)
+    requests.post(KEYCLOAK_URL + 'realms/demo/protocol/openid-connect/logout', data=payload)
     return redirect('/')

@@ -6,7 +6,7 @@ import requests
 
 class KeycloakBackend(RemoteUserBackend):
     def authenticate(self, request):
-        http = KEYCLOAK_URL + 'auth/realms/demo/protocol/openid-connect/userinfo'
+        http = KEYCLOAK_URL + 'realms/demo/protocol/openid-connect/userinfo'
         response = requests.request("GET", http, headers={'Authorization': "Bearer " + request.content_params['token']})
         if response.status_code == 200:
             try:
