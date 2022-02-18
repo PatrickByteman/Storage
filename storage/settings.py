@@ -134,6 +134,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 AUTHENTICATION_BACKENDS = ['keycloak.keycloak_authentication.KeycloakBackend']
 KEYCLOAK_CLIENT_SECRET = 'qkguMvpLGbGx56otjxTWUQwmUNPXM5Io'
 KEYCLOAK_CLIENT_ID = 'lox'
+KEYCLOAK_URL = 'http://127.0.0.1:8080/'
 
 # Boostrap settings
 BOOTSTRAP5 = {
