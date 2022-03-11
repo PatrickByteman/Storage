@@ -1,6 +1,6 @@
 FROM python:3.8
 
-ADD ./ /usr/src/storage
+COPY ./ /usr/src/storage
 WORKDIR /usr/src/storage
 
 # set environment variables
@@ -10,6 +10,7 @@ ENV PYTHONUNBUFFERED 1
 RUN pip install --upgrade pip
 RUN pip install -r ./requirements.txt
 
+# listen port
 EXPOSE 8000
 
 #RUN python manage.py migrate

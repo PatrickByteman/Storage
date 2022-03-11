@@ -20,6 +20,8 @@ def index_page(request):
     context = {
         'pagename': 'Главная',
     }
+    print(requests.request("GET", 'http://172.19.0.2:8080/'))
+    print(requests.request("GET", 'http://storage-keycloak-1:8080/'))
     return render(request, 'pages/index.html', context)
 
 
@@ -154,7 +156,7 @@ def oidc_login(request):
     redirect_uri = 'http://127.0.0.1:8000/callback'
     scope = 'openid email profile'
     oauth = OAuth2Session(KEYCLOAK_CLIENT_ID, redirect_uri=redirect_uri, scope=scope)
-    authorization_url, state = oauth.authorization_url(KEYCLOAK_URL+'realms/demo/protocol/openid-connect/auth')
+    authorization_url, state = oauth.authorization_url('http://127.0.0.1:8080/realms/demo/protocol/openid-connect/auth')
     return redirect(authorization_url)
 
 
@@ -178,7 +180,7 @@ def callback(request):
     http = KEYCLOAK_URL + 'realms/demo/protocol/openid-connect/token/introspect/'
     userinfo = requests.post(http, data=payload)
     userinfo = userinfo.json()
-
+    print(userinfo)
     try:
         keycloak_user = KeycloakUser.objects.get(keycloak_id=userinfo['sub'])
     except ObjectDoesNotExist:
