@@ -20,8 +20,8 @@ def index_page(request):
     context = {
         'pagename': 'Главная',
     }
-    print(requests.request("GET", 'http://172.19.0.2:8080/'))
-    print(requests.request("GET", 'http://storage-keycloak-1:8080/'))
+    #print(requests.request("GET", 'http://172.19.0.2:8080/'))
+    #print(requests.request("GET", 'http://storage-keycloak-1:8080/'))
     return render(request, 'pages/index.html', context)
 
 
@@ -169,7 +169,10 @@ def callback(request):
         KEYCLOAK_URL+'realms/demo/protocol/openid-connect/token',
         authorization_response=response,
         client_secret=KEYCLOAK_CLIENT_SECRET)
-
+    print(token)
+    http = KEYCLOAK_URL + 'realms/demo/protocol/openid-connect/userinfo'
+    response = requests.request("GET", http, headers={'Authorization': "Bearer " + token['refresh_token']})
+    print(response)
     payload = {
         'client_id': KEYCLOAK_CLIENT_ID,
         'client_secret': KEYCLOAK_CLIENT_SECRET,
