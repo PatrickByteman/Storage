@@ -8,8 +8,7 @@ services:
       - .:/usr/src/storage
     ports:
       - 8000:8000
-    networks:
-      - l
+    network_mode: host
 
   keycloak:
     image: quay.io/keycloak/keycloak:17.0.0
@@ -19,8 +18,4 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
     ports:
       - 8080:8080
-    networks:
-      - l
-
-networks:
-  l:
+    network_mode: host
