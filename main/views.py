@@ -20,7 +20,7 @@ def index_page(request):
     context = {
         'pagename': 'Главная',
     }
-    #print(requests.request("GET", 'http://172.19.0.2:8080/'))
+    #print(requests.request("GET", 'http://127.0.0.1:8080/'))
     #print(requests.request("GET", 'http://storage-keycloak-1:8080/'))
     return render(request, 'pages/index.html', context)
 
@@ -153,7 +153,7 @@ class EventsView(View):
 
 # keycloak oidc login
 def oidc_login(request):
-    redirect_uri = 'http://127.0.0.1:8000/callback'
+    redirect_uri = 'http://192.168.43.94:80/callback'
     scope = 'openid email profile'
     oauth = OAuth2Session(KEYCLOAK_CLIENT_ID, redirect_uri=redirect_uri, scope=scope)
     authorization_url, state = oauth.authorization_url('http://127.0.0.1:8080/realms/demo/protocol/openid-connect/auth')
@@ -161,29 +161,23 @@ def oidc_login(request):
 
 
 def callback(request):
-    response = 'http://127.0.0.1:8000' + request.get_full_path()
-    redirect_uri = 'http://127.0.0.1:8000/callback'
+    response = 'http://192.168.43.94:80' + request.get_full_path()
+    redirect_uri = 'http://192.168.43.94:80/callback'
     scope = 'openid email profile'
     oauth = OAuth2Session(KEYCLOAK_CLIENT_ID, redirect_uri=redirect_uri, scope=scope)
     token = oauth.fetch_token(
         KEYCLOAK_URL+'realms/demo/protocol/openid-connect/token',
         authorization_response=response,
         client_secret=KEYCLOAK_CLIENT_SECRET)
-    print(token)
-    http = KEYCLOAK_URL + 'realms/demo/protocol/openid-connect/userinfo'
-    response = requests.request("GET", http, headers={'Authorization': "Bearer " + token['refresh_token']})
-    print(response)
     payload = {
         'client_id': KEYCLOAK_CLIENT_ID,
         'client_secret': KEYCLOAK_CLIENT_SECRET,
         'token': token['access_token'],
-        'refresh_token': token['refresh_token'],
         'Content-Type': 'application/x-www-form-urlencoded',
     }
     http = KEYCLOAK_URL + 'realms/demo/protocol/openid-connect/token/introspect/'
     userinfo = requests.post(http, data=payload)
     userinfo = userinfo.json()
-    print(userinfo)
     try:
         keycloak_user = KeycloakUser.objects.get(keycloak_id=userinfo['sub'])
     except ObjectDoesNotExist:

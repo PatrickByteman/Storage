@@ -1,15 +1,13 @@
-version: '3.9'
+version: '3.7'
 
 services:
-  storage_web:
+  web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn storage.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - .:/usr/src/storage
-    ports:
-      - 8000:8000
-    networks:
-      - l
+      - ./static:/static
+    expose:
+      - 8000
 
   keycloak:
     image: quay.io/keycloak/keycloak:17.0.0
@@ -17,10 +15,14 @@ services:
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-    ports:
-      - 8080:8080
-    networks:
-      - l
+      PROXY_ADDRESS_FORWADING: "true"
+      REDIRECT_SOCKET: "proxy-https"
+    expose:
+      - 8080
 
-networks:
-  l:
+  nginx:
+    build: ./nginx
+    volumes:
+      - ./static:/static
+    ports:
+      - 80:80
