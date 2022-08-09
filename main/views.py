@@ -156,7 +156,7 @@ def oidc_login(request):
     scope = 'openid email profile'
     oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
     authorization_url, state = oauth.authorization_url(
-        'http://127.0.0.1:8080/auth/realms/demo/protocol/openid-connect/auth')
+        'http://127.0.0.1:8080/realms/demo/protocol/openid-connect/auth')
     return redirect(authorization_url)
 
 
@@ -167,18 +167,20 @@ def callback(request):
     redirect_uri = 'http://127.0.0.1:8000/callback'
     scope = 'openid email profile'
     oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
+
     token = oauth.fetch_token(
-        'http://127.0.0.1:8080/auth/realms/demo/protocol/openid-connect/token',
+        'http://127.0.0.1:8080/realms/demo/protocol/openid-connect/token',
         authorization_response=response,
         client_secret=client_secret)
-
+    print(oauth.authorized)
+    print(token)
     payload = {
         'client_id': 'lox',
         'client_secret': KEYCLOAK_CLIENT_SECRET,
         'token': token['access_token'],
         'Content-Type': 'application/x-www-form-urlencoded',
     }
-    http = "http://127.0.0.1:8080/auth/realms/demo/protocol/openid-connect/token/introspect/"
+    http = "http://127.0.0.1:8080/realms/demo/protocol/openid-connect/token/introspect/"
     userinfo = requests.post(http, data=payload)
     userinfo = userinfo.json()
 
