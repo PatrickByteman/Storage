@@ -17,6 +17,7 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
       PROXY_ADDRESS_FORWADING: "true"
       REDIRECT_SOCKET: "proxy-https"
+      KC_HOSTNAME: 'keycloak.net'
     expose:
       - 8080
 

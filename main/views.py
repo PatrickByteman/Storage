@@ -153,18 +153,19 @@ class EventsView(View):
 
 # keycloak oidc login
 def oidc_login(request):
-    redirect_uri = 'http://192.168.43.94:80/callback'
+    redirect_uri = 'http://storage.net/callback'
     scope = 'openid email profile'
     oauth = OAuth2Session(KEYCLOAK_CLIENT_ID, redirect_uri=redirect_uri, scope=scope)
-    authorization_url, state = oauth.authorization_url('http://127.0.0.1:8080/realms/demo/protocol/openid-connect/auth')
+    authorization_url, state = oauth.authorization_url(KEYCLOAK_URL+'realms/demo/protocol/openid-connect/auth')
     return redirect(authorization_url)
 
 
 def callback(request):
-    response = 'http://192.168.43.94:80' + request.get_full_path()
-    redirect_uri = 'http://192.168.43.94:80/callback'
+    response = 'http://storage.net' + request.get_full_path()
+    redirect_uri = 'http://storage.net/callback'
     scope = 'openid email profile'
     oauth = OAuth2Session(KEYCLOAK_CLIENT_ID, redirect_uri=redirect_uri, scope=scope)
+    print(oauth)
     token = oauth.fetch_token(
         KEYCLOAK_URL+'realms/demo/protocol/openid-connect/token',
         authorization_response=response,
