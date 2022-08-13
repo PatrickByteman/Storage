@@ -188,7 +188,6 @@ def callback(request):
 
     request.content_params['token'] = token['access_token']
     request.content_params['user_id'] = keycloak_user.user_id
-
     user = authenticate(request)
     login(request, user)
     request.content_params.clear()
