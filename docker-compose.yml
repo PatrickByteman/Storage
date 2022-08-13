@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+  web:
+    build: .
+    command: gunicorn storage.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./static:/static
+    expose:
+      - 8000
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:17.0.0
+    command: start-dev
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      PROXY_ADDRESS_FORWADING: "true"
+      REDIRECT_SOCKET: "proxy-https"
+      KC_HOSTNAME: 'keycloak.net'
+    expose:
+      - 8080
+
+  nginx:
+    build: ./nginx
+    volumes:
+      - ./static:/static
+    ports:
+      - 80:80

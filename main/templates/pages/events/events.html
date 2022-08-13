@@ -87,14 +87,15 @@
                 <hr>
                 <table class="table table-bordered">
                     <tbody>
+                        <td>Time</td>
+                        <td>Type</td>
+                        <td>Details</td>
                         {% for event in events %}
                             {% for e in event %}
                                 <tr>
                                     {% for res, value in e.items %}
-                                        <tr>
-                                            <th scope="row">{{ res }}</th>
-                                            <td>{{ value }}</td>
-                                        </tr>
+                                        <th scope="row">{{ res }}</th>
+                                        <td>{{ value }}</td>
                                     {% endfor %}
                                 </tr>
                             {% endfor %}

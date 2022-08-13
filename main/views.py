@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 from django.views import View
 from main.models import KeycloakUser, TypeFilter
-from storage.settings import KEYCLOAK_CLIENT_SECRET
+from storage.settings import KEYCLOAK_CLIENT_SECRET, KEYCLOAK_CLIENT_ID, KEYCLOAK_URL
 from keycloak.keycloak import Keycloak
 from requests_oauthlib import OAuth2Session
 import requests
@@ -151,39 +151,31 @@ class EventsView(View):
 
 # keycloak oidc login
 def oidc_login(request):
-    client_id = 'lox'
-    redirect_uri = 'http://127.0.0.1:8000/callback'
+    redirect_uri = 'http://storage.net/callback'
     scope = 'openid email profile'
-    oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
-    authorization_url, state = oauth.authorization_url(
-        'http://127.0.0.1:8080/realms/demo/protocol/openid-connect/auth')
+    oauth = OAuth2Session(KEYCLOAK_CLIENT_ID, redirect_uri=redirect_uri, scope=scope)
+    authorization_url, state = oauth.authorization_url(KEYCLOAK_URL+'realms/demo/protocol/openid-connect/auth')
     return redirect(authorization_url)
 
 
 def callback(request):
-    client_id = 'lox'
-    client_secret = KEYCLOAK_CLIENT_SECRET
-    response = 'http://127.0.0.1:8000' + request.get_full_path()
-    redirect_uri = 'http://127.0.0.1:8000/callback'
+    response = 'http://storage.net' + request.get_full_path()
+    redirect_uri = 'http://storage.net/callback'
     scope = 'openid email profile'
-    oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
-
+    oauth = OAuth2Session(KEYCLOAK_CLIENT_ID, redirect_uri=redirect_uri, scope=scope)
     token = oauth.fetch_token(
-        'http://127.0.0.1:8080/realms/demo/protocol/openid-connect/token',
+        KEYCLOAK_URL+'realms/demo/protocol/openid-connect/token',
         authorization_response=response,
-        client_secret=client_secret)
-    print(oauth.authorized)
-    print(token)
+        client_secret=KEYCLOAK_CLIENT_SECRET)
     payload = {
-        'client_id': 'lox',
+        'client_id': KEYCLOAK_CLIENT_ID,
         'client_secret': KEYCLOAK_CLIENT_SECRET,
         'token': token['access_token'],
         'Content-Type': 'application/x-www-form-urlencoded',
     }
-    http = "http://127.0.0.1:8080/realms/demo/protocol/openid-connect/token/introspect/"
+    http = KEYCLOAK_URL + 'realms/demo/protocol/openid-connect/token/introspect/'
     userinfo = requests.post(http, data=payload)
     userinfo = userinfo.json()
-
     try:
         keycloak_user = KeycloakUser.objects.get(keycloak_id=userinfo['sub'])
     except ObjectDoesNotExist:
@@ -200,4 +192,5 @@ def callback(request):
     user = authenticate(request)
     login(request, user)
     request.content_params.clear()
+    requests.post(KEYCLOAK_URL + 'realms/demo/protocol/openid-connect/logout', data=payload)
     return redirect('/')

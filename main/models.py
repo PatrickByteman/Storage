@@ -10,4 +10,3 @@ class KeycloakUser(models.Model):
 class TypeFilter(models.Model):
     name = models.CharField(max_length=128, unique=True)
     types = models.JSONField()
-

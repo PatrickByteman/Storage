@@ -1,23 +1,23 @@
 import requests
 import datetime
-from storage.settings import KEYCLOAK_CLIENT_SECRET
+from storage.settings import KEYCLOAK_CLIENT_SECRET, KEYCLOAK_CLIENT_ID, KEYCLOAK_URL
 
 
 class Keycloak:
     token = ''
 
     def get_token(self):
-        url = 'http://127.0.0.1:8080/auth/realms/demo/protocol/openid-connect/userinfo'
+        url = KEYCLOAK_URL + 'realms/demo/protocol/openid-connect/userinfo'
         response = requests.request("GET", url, headers={'Authorization': "Bearer " + self.token})
         if response.status_code == 200:
             return self.token
         payload = {
-            "client_id": "lox",
+            "client_id": KEYCLOAK_CLIENT_ID,
             "client_secret": KEYCLOAK_CLIENT_SECRET,
             "grant_type": "client_credentials",
             "Content-Type": "application/x-www-form-urlencoded",
         }
-        url = "http://127.0.0.1:8080/auth/realms/demo/protocol/openid-connect/token"
+        url = KEYCLOAK_URL + 'realms/demo/protocol/openid-connect/token'
         response = requests.post(url, data=payload)
         response = response.json()
         self.token = response['access_token']
@@ -33,7 +33,7 @@ class Keycloak:
     #     return False
 
     def get_user_by_userid(self, userid):
-        url = 'http://127.0.0.1:8080/auth/admin/realms/demo/users/'
+        url = KEYCLOAK_URL + 'admin/realms/demo/users/'
         response = requests.request("GET", url + userid, headers={'Authorization': "Bearer " + self.token}, params={})
         if response.status_code == 200:
             response = response.json()
@@ -52,7 +52,7 @@ class Keycloak:
         return 'user not found'
 
     def get_users_by_username(self, username):
-        url = 'http://127.0.0.1:8080/auth/admin/realms/demo/users/'
+        url = KEYCLOAK_URL + 'admin/realms/demo/users/'
         response = requests.request("GET", url, headers={'Authorization': "Bearer " + self.token},
                                     params={'username': username})
         if response.status_code == 200:
@@ -73,7 +73,7 @@ class Keycloak:
         return 'user not found'
 
     def get_user_roles(self, userid):
-        url = 'http://127.0.0.1:8080/auth/admin/realms/demo/users/'
+        url = KEYCLOAK_URL + 'admin/realms/demo/users/'
         response = requests.request("GET", url + userid + '/role-mappings/',
                                     headers={'Authorization': "Bearer " + self.token}, params={})
         response = response.json()
@@ -88,8 +88,8 @@ class Keycloak:
         return roles
 
     def get_user_events(self, date_from, date_to, user_id, search_types):
-        http = 'http://127.0.0.1:8080/auth/admin/realms/demo/events/'
-        response = requests.request("GET", http, headers={'Authorization': "Bearer " + self.token},
+        url = KEYCLOAK_URL + 'admin/realms/demo/events/'
+        response = requests.request("GET", url, headers={'Authorization': "Bearer " + self.token},
                                     params={'max': 100000, 'dateFrom': date_from, 'dateTo': date_to,
                                             'user': user_id, 'type': search_types})
         response = response.json()

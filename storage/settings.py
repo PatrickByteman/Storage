@@ -25,7 +25,7 @@ SECRET_KEY = 'kdpg$3w+vy^1i*y7=g%8g1jxr@wo5ql!lx8p82(kw0-jkqgd9v'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.43.94', '192.168.1.53', 'storage.net']
 
 # Application definition
 
@@ -132,7 +132,10 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 AUTHENTICATION_BACKENDS = ['keycloak.keycloak_authentication.KeycloakBackend']
-KEYCLOAK_CLIENT_SECRET = 'e2tpmbeJxmU26VEsSjf3Z7ZIx8pPtR4O'
+KEYCLOAK_CLIENT_SECRET = 'CMEWpEGh379zCQhC5hld70hGkn487NWi'
+KEYCLOAK_CLIENT_ID = 'lox'
+KEYCLOAK_URL = 'http://keycloak.net/'
+#KEYCLOAK_URL = 'http://storage_keycloak_1:8080/'
 
 # Boostrap settings
 BOOTSTRAP5 = {
