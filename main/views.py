@@ -165,7 +165,6 @@ def callback(request):
     redirect_uri = 'http://storage.net/callback'
     scope = 'openid email profile'
     oauth = OAuth2Session(KEYCLOAK_CLIENT_ID, redirect_uri=redirect_uri, scope=scope)
-    print(oauth)
     token = oauth.fetch_token(
         KEYCLOAK_URL+'realms/demo/protocol/openid-connect/token',
         authorization_response=response,
