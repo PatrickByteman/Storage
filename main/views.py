@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 from django.views import View
 from main.models import KeycloakUser, TypeFilter
-from storage.settings import KEYCLOAK_CLIENT_SECRET, KEYCLOAK_CLIENT_ID, KEYCLOAK_URL
+from storage.settings import KEYCLOAK_CLIENT_SECRET, KEYCLOAK_CLIENT_ID, KEYCLOAK_URL, SITE_URL
 from keycloak.keycloak import Keycloak
 from requests_oauthlib import OAuth2Session
 import requests
@@ -151,7 +151,7 @@ class EventsView(View):
 
 # keycloak oidc login
 def oidc_login(request):
-    redirect_uri = 'http://storage.net/callback'
+    redirect_uri = SITE_URL+'callback'
     scope = 'openid email profile'
     oauth = OAuth2Session(KEYCLOAK_CLIENT_ID, redirect_uri=redirect_uri, scope=scope)
     authorization_url, state = oauth.authorization_url(KEYCLOAK_URL+'realms/demo/protocol/openid-connect/auth')
@@ -159,8 +159,8 @@ def oidc_login(request):
 
 
 def callback(request):
-    response = 'http://storage.net' + request.get_full_path()
-    redirect_uri = 'http://storage.net/callback'
+    response = SITE_URL + request.get_full_path()
+    redirect_uri = SITE_URL+'callback'
     scope = 'openid email profile'
     oauth = OAuth2Session(KEYCLOAK_CLIENT_ID, redirect_uri=redirect_uri, scope=scope)
     token = oauth.fetch_token(

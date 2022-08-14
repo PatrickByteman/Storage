@@ -86,17 +86,41 @@
             </form>
                 <hr>
                 <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">Time</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Details</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <td>Time</td>
-                        <td>Type</td>
-                        <td>Details</td>
                         {% for event in events %}
                             {% for e in event %}
                                 <tr>
-                                    {% for res, value in e.items %}
-                                        <th scope="row">{{ res }}</th>
-                                        <td>{{ value }}</td>
-                                    {% endfor %}
+                                    <td>{{ e.time }}</td>
+                                    <td>{{ e.type }}</td>
+                                    <td>
+                                        <table class="table table-bordered">
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">Realm</th>
+                                                    <td>{{ e.realmId }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Client</th>
+                                                    <td>{{ e.clientId }}</td>
+                                                </tr>
+                                                {% for res, value in e.items %}
+                                                    {% if res != "time" and res != "type" and res != "realmId" and res != "clientId" %}
+                                                        <tr>
+                                                            <th scope="row">{{ res }}</th>
+                                                            <td>{{ value }}</td>
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         {% endfor %}
