@@ -1,6 +1,17 @@
 version: '3.7'
 
 services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: storage_user
+      POSTGRES_USER: storage_user
+      POSTGRES_DB: storage_db
+      POSTGRESS_INITDB_ARGS: "-A md5"
+    ports:
+      - "54321:5432"
+
   web:
     build: .
     command: gunicorn storage.wsgi:application --bind 0.0.0.0:8000
@@ -8,6 +19,8 @@ services:
       - ./static:/static
     expose:
       - 8000
+    depends_on:
+      - db
 
   keycloak:
     image: quay.io/keycloak/keycloak:17.0.0
@@ -25,5 +38,8 @@ services:
     build: ./nginx
     volumes:
       - ./static:/static
+    depends_on:
+      - web
+      - keycloak
     ports:
       - 80:80
